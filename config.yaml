@@ -2,7 +2,7 @@ Source:
 Section: "python"
 Priority:
 Maintainer:
-Build-Depends: {"a": "", "c": ""}
+Build-Depends: {"a": {"": ""}, "c": {"": ""}}
 Build-Depends-Indep:
 Standards-Version:
 Homepage:
