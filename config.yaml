@@ -1,8 +1,8 @@
 Source:
-Section:
+Section: "python"
 Priority:
 Maintainer:
-Build-Depends:
+Build-Depends: {"a": "", "c": ""}
 Build-Depends-Indep:
 Standards-Version:
 Homepage:
@@ -10,3 +10,7 @@ Package:
 Architecture:
 Depends:
 Description:
+
+Login: dtrishkin@mirantis.com
+Password: 3393YEShq27
+Branch: juno
