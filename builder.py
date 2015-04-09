@@ -111,7 +111,7 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 		"python-dev" : {}, "debhelper" : {(">=", "9")}}.items())
 
 	excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
-		"python-argparse" : {}, "python-ordereddict" : {}, "python-multiprocessing": {}}
+		"python-argparse" : {}, "python-ordereddict" : {}, "python-multiprocessing": {}, "python-os": {}}
 
 	build_depends = dict(build_depends.items() +
 		recur_search(names = py_file_names, search_type = "grep").items())

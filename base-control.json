@@ -65,7 +65,7 @@
     "greenlet":"python-greenlet",
     "hacking":"python-hacking",
     "happybase":"python-happybase",
-    "httplib2":"httplib2",
+    "httplib2":"python-httplib2",
     "iso8601":"python-iso8601",
     "jsonpatch":"python-jsonpatch",
     "jsonpath-rw":"python-jsonpath-rw",

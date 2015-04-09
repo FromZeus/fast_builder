@@ -3,7 +3,7 @@
     "cliff-tablib":"cliff-tablib",
     "cmd2":"cmd2",
     "doc":"doc8",
-    "httplib2":"httplib2",
+    "httplib2":"python-httplib2",
     "mako":"Mako",
     "openstack-doc-tools":"openstack-doc-tools",
     "pep8":"pep8",
