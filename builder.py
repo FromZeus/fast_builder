@@ -20,9 +20,10 @@ sectTemplate = re.compile(":.+")
 dep_sects_list = ["Depends", "Build-Depends", "Build-Depends-Indep"]
 section_list = ["Source", "Section", "Priority", "Maintainer",
 "Build-Depends", "Build-Depends-Indep", "Standards-Version",
-"Homepage", "Package", "Depends", "Description"]
+"Homepage", "Package", "Architecture", "Depends", "Description"]
 section_dict = dict()
-
+#[{}, {}, {}] => {(), (), ()} ???
+#[()]
 def main():
 	#pdb.set_trace()
 	try:
@@ -44,10 +45,11 @@ def main():
 			if line["Build-Depends"]:
 				section_dict["Build-Depends"] = line["Build-Depends"]
 				for el in section_dict["Build-Depends"].keys():
-					section_dict["Build-Depends"][el] = set(section_dict["Build-Depends"][el].items())
+					section_dict["Build-Depends"][el] = {(iel for iel in el.items()) for el in section_dict["Build-Depends"][el]} #set(section_dict["Build-Depends"][el].items())
 			if line["Build-Depends-Indep"]:
 				section_dict["Build-Depends-Indep"] = line["Build-Depends-Indep"]
 				for el in section_dict["Build-Depends-Indep"].keys():
+					section_dict["Build-Depends-Indep"][el] = {(iel for iel in el.items()) for el in section_dict["Build-Depends-Indep"][el]}
 					section_dict["Build-Depends-Indep"][el] = set(section_dict["Build-Depends-Indep"][el].items())
 			section_dict["Standards-Version"] = line["Standards-Version"]
 			section_dict["Homepage"] = line["Homepage"]
@@ -146,7 +148,7 @@ def load_control(control_file_name = "control"):
 				for el in section_dict.keys():
 					if el not in dep_sects_list and el in line:
 						if not section_dict[el]:
-							section_dict[el] = sectTemplate.search(line).group(0)
+							section_dict[el] = re.sub(":\s+", "", sectTemplate.search(line).group(0))
 	except IOError:
 		print "There is no control file!"
 
@@ -154,20 +156,24 @@ def build_control(control_file_name = "control"):
 	try:
 		with open(recur_search(control_file_name), "w+") as control_file:
 			for el in section_list:
-				control_file.write(el)
-				if el not in dep_sects_list:
-					control_file.write(section_dict[el] + "\n")
-				else:
+				if section_dict.has_key(el):
 					print el
-					print section_dict[el]	
-					if section_dict[el]:
-						for key, val in section_dict[el].items():
-							control_file.write("\n")
-							for el2 in val:
-								control_file.write(" {0} ({1} {2}),".format(key, el2[0], el2[1]))
+					#print section_dict[el]	
+					control_file.write(el)
+					if el not in dep_sects_list:
+						control_file.write(": {0}\n".format(section_dict[el]))
 					else:
-						control_file.write("\n")
-						control_file.write(" {0},".format(el))
+						control_file.write(":\n")			
+						for key, val in section_dict[el].items():
+							control_file.write(" {0}".format(key))
+							if val:
+								for el2 in val:
+									control_file.write(" ({1} {2}),\n".format(el2[0], el2[1]))
+							else:
+								control_file.write(",\n")
+							#else:
+						#	control_file.write("\n")
+						#	control_file.write(" {0},".format(el))
 	except IOError:
 		print "Error while overwriting control file!"
 

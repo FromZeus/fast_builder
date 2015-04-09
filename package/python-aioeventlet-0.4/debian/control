@@ -1,7 +1,9 @@
 Source: python-aioeventlet
-Sectionpython
+Section: python
 Priority: optional
-Maintainer: dtrishkin <dtrishkin@mirantis.com>
-Build-Depends
- a ( ),
- c ( ),Build-Depends-Indep
+Maintainer: s-quark <dtrishkin@mirantis.com>
+Standards-Version: 3.9.4
+Homepage: <insert the upstream URL, if relevant>
+Package: python-aioeventlet
+Architecture: any
+Description: <insert up to 60 chars description>

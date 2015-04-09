@@ -25,7 +25,7 @@ manpage.1: manpage.sgml
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
   <!ENTITY dhemail     "<email>dtrishkin@mirantis.com</email>">
-  <!ENTITY dhusername  "dtrishkin">
+  <!ENTITY dhusername  "s-quark">
   <!ENTITY dhucpackage "<refentrytitle>PYTHON-AIOEVENTLET</refentrytitle>">
   <!ENTITY dhpackage   "python-aioeventlet">
 

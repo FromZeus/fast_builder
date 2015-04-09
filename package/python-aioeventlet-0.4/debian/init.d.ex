@@ -11,7 +11,7 @@
 #                    <...>
 ### END INIT INFO
 
-# Author: dtrishkin <dtrishkin@mirantis.com>
+# Author: s-quark <dtrishkin@mirantis.com>
 
 # Do NOT "set -e"
 
