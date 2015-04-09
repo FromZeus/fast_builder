@@ -3,13 +3,18 @@ Section: "python"
 Priority:
 Maintainer:
 Build-Depends:
+  "a":
+    - ">=": "0.8"
+    - "<": "0.9"
+  "b":
+    - ">=": "0.1.1"
+    - "<=": "0.2.9"
 Build-Depends-Indep:
 Standards-Version:
 Homepage:
 Package:
 Architecture:
 Depends:
-  "pbr": [{">" : 0.5}]
 Description:
 
 Login: dtrishkin@mirantis.com
