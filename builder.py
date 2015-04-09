@@ -24,6 +24,7 @@ section_list = ["Source", "Section", "Priority", "Maintainer",
 section_dict = dict()
 #[{}, {}, {}] => {(), (), ()} ???
 #[()]
+#{a:b}
 def main():
 	#pdb.set_trace()
 	try:
@@ -42,23 +43,25 @@ def main():
 			section_dict["Section"] = line["Section"]
 			section_dict["Priority"] = line["Priority"]
 			section_dict["Maintainer"] = line["Maintainer"]
-			if line["Build-Depends"]:
-				section_dict["Build-Depends"] = line["Build-Depends"]
+			section_dict["Build-Depends"] = line["Build-Depends"]
+			#if line["Build-Depends"]:
+			if section_dict["Build-Depends"]:
 				for el in section_dict["Build-Depends"].keys():
-					section_dict["Build-Depends"][el] = {(iel for iel in el.items()) for el in section_dict["Build-Depends"][el]} #set(section_dict["Build-Depends"][el].items())
-			if line["Build-Depends-Indep"]:
-				section_dict["Build-Depends-Indep"] = line["Build-Depends-Indep"]
+					section_dict["Build-Depends"][el] = {(el1.items()[0]) for el1 in section_dict["Build-Depends"][el]}
+			section_dict["Build-Depends-Indep"] = line["Build-Depends-Indep"]
+			#if line["Build-Depends-Indep"]:
+			if section_dict["Build-Depends-Indep"]:
 				for el in section_dict["Build-Depends-Indep"].keys():
-					section_dict["Build-Depends-Indep"][el] = {(iel for iel in el.items()) for el in section_dict["Build-Depends-Indep"][el]}
-					section_dict["Build-Depends-Indep"][el] = set(section_dict["Build-Depends-Indep"][el].items())
+					section_dict["Build-Depends-Indep"][el] = {(el1.items()[0]) for el1 in section_dict["Build-Depends-Indep"][el]}
 			section_dict["Standards-Version"] = line["Standards-Version"]
 			section_dict["Homepage"] = line["Homepage"]
 			section_dict["Package"] = line["Package"]
 			section_dict["Architecture"] = line["Architecture"]
-			if line["Depends"]:
-				section_dict["Depends"] = line["Depends"]
+			#if line["Depends"]:
+			section_dict["Depends"] = line["Depends"]
+			if section_dict["Depends"]:
 				for el in section_dict["Depends"].keys():
-					section_dict["Depends"][el] = set(section_dict["Depends"][el].items())
+					section_dict["Depends"][el] = {(el1.items()[0]) for el1 in section_dict["Depends"][el]}
 			section_dict["Description"] = line["Description"]
 
 			load_control()
@@ -76,8 +79,8 @@ def main():
 			global_req = require_utils.Require.parse_req(
 				lan.get_requirements_from_url(req_url, gerritAccount))
 
-			print get_dependencies(global_req, depends)
-			print get_build_dependencies(global_req, build_depends)
+			section_dict["Depends"] = get_dependencies(global_req, section_dict["Depends"])
+			section_dict["Build-Depends"] = get_build_dependencies(global_req, section_dict["Build-Depends"])
 			
 			for el in section_list:
 				if section_dict.has_key(el):
@@ -91,6 +94,8 @@ def main():
         raise SystemExit
 
 def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py"]):
+	if not build_depends:
+		build_depends = dict()
 	build_depends = dict(build_depends.items() + {"python-setuptools" : {}, "python-all" : {},
 		"python-dev" : {}, "debhelper" : {(">=", "9")}}.items())
 
@@ -106,6 +111,8 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 	return build_depends
 
 def get_dependencies(global_req, depends, req_file_names = ["requires.txt", "requirements.txt"]):
+	if not depends:
+		depends = dict()
 	try:
 		with open(recur_search(req_file_names), 'r') as req_file:
 			for line in req_file:
@@ -156,24 +163,21 @@ def build_control(control_file_name = "control"):
 	try:
 		with open(recur_search(control_file_name), "w+") as control_file:
 			for el in section_list:
-				if section_dict.has_key(el):
+				if section_dict.has_key(el) and section_dict[el]:
 					print el
-					#print section_dict[el]	
+					#print section_dict[el]
 					control_file.write(el)
 					if el not in dep_sects_list:
 						control_file.write(": {0}\n".format(section_dict[el]))
 					else:
-						control_file.write(":\n")			
+						control_file.write(":\n")		
 						for key, val in section_dict[el].items():
-							control_file.write(" {0}".format(key))
 							if val:
 								for el2 in val:
-									control_file.write(" ({1} {2}),\n".format(el2[0], el2[1]))
+									control_file.write(" {0} ({1} {2}),".format(key, el2[0], el2[1]))
+								control_file.write("\n")
 							else:
-								control_file.write(",\n")
-							#else:
-						#	control_file.write("\n")
-						#	control_file.write(" {0},".format(el))
+								control_file.write(" {0},\n".format(key))
 	except IOError:
 		print "Error while overwriting control file!"
 

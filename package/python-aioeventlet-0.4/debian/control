@@ -1,9 +1,19 @@
 Source: python-aioeventlet
 Section: python
 Priority: optional
-Maintainer: s-quark <dtrishkin@mirantis.com>
+Maintainer: dtrishkin <dtrishkin@mirantis.com>
+Build-Depends:
+ a (>= 0.8), a (< 0.9),
+ python-setuptools,
+ b (>= 0.1.1), b (<= 0.2.9),
+ debhelper (>= 9),
+ python-all,
+ python-dev,
 Standards-Version: 3.9.4
 Homepage: <insert the upstream URL, if relevant>
 Package: python-aioeventlet
 Architecture: any
+Depends:
+ trollius (<= 1.0.4), trollius (>= 1.0),
+ eventlet (>= 0.15.1), eventlet (<= 0.15.2),
 Description: <insert up to 60 chars description>
