@@ -111,7 +111,7 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 		"python-dev" : {}, "debhelper" : {(">=", "9")}}.items())
 
 	excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
-		"python-argparse" : {}, "python-ordereddict" : {}}
+		"python-argparse" : {}, "python-ordereddict" : {}, "python-multiprocessing": {}}
 
 	build_depends = dict(build_depends.items() +
 		recur_search(names = py_file_names, search_type = "grep").items())
@@ -170,7 +170,7 @@ def format_sign(el):
 
 def recur_search(names, relative_path = ".", search_type = "default"):
 	for el in listdir(relative_path):
-		if isdir(join(relative_path, el)):
+		if isdir(join(relative_path, el)) and el not in ["doc"]:
 			path = recur_search(names, join(relative_path, el), search_type)
 			if path:
 				return path
@@ -183,9 +183,9 @@ def recur_search(names, relative_path = ".", search_type = "default"):
 							imp = grepTemplate0.search(line)
 							frm = grepTemplate1.search(line)
 							if imp:
-								res_grep.setdefault("python-" + packageNameEnd.search(imp.group(0)).group(0), {})
+								res_grep.setdefault("python-" + re.sub("[_]", "-", packageNameEnd.search(imp.group(0)).group(0)), {})
 							if frm:
-								res_grep.setdefault("python-" + packageNameEnd.search(frm.group(0)).group(0), {})
+								res_grep.setdefault("python-" + re.sub("[_]", "-", packageNameEnd.search(frm.group(0)).group(0)), {})
 						return res_grep
 				except IOError:
 					None
@@ -212,6 +212,8 @@ def build_control(control_file_name = "control"):
 					control_file.write(el)
 					if el not in dep_sects_list:
 						control_file.write(": {0}\n".format(section_dict[el]))
+						if el == "Homepage":
+							control_file.write("\n")
 					else:
 						control_file.write(":\n")		
 						for key, val in section_dict[el].items():

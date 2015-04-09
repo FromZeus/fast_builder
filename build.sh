@@ -36,8 +36,15 @@ main()
 	rm -rf ${buf%.tar.gz}
 
 	dh_make -e ${email} -f "../${tarName}" -s -y
+
 	popd
 	popd
+	python builder.py -c "config.yaml"
+	pushd "package"
+	pushd "python-${packageName}"
+
+	set DEB_BUILD_OPTIONS=nocheck 
+	dpkg-buildpackage -rfakeroot -us -uc
 }
 
 if [ $# -eq 0 ]

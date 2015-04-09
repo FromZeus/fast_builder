@@ -1,5 +1,0 @@
-python-aioeventlet (0.4-1) unstable; urgency=low
-
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
-
- -- s-quark <dtrishkin@mirantis.com>  Wed, 08 Apr 2015 23:56:18 +0300
