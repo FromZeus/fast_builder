@@ -1,2 +1,2 @@
 1. Place .tar.gz to "package" directory
-2. Run "build.sh"
+2. Run "build.sh -e your@email.com"
