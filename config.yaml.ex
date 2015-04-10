@@ -18,5 +18,5 @@ Depends:
 Description:
 
 Login: dtrishkin@mirantis.com
-Password: 3393YEShq27
+Password:
 Branch: juno

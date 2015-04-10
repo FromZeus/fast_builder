@@ -45,14 +45,14 @@ main()
 
 	set DEB_BUILD_OPTIONS=nocheck 
 	dpkg-buildpackage -rfakeroot -us -uc
-
+#
 	popd
 	deb_tar_gz=$(find . -name "*.debian.tar.gz")
 	orig_tar_gz=$(find . -name "*.orig.tar.gz")
 	tar -xvf ${deb_tar_gz}
 	tar -xvf ${orig_tar_gz}
 	pushd "debian"
-	for i in $(find . . -regextype posix-egrep -regex ".*(EX|ex)$"); do rm -f $i; done
+	for i in $(find . -regextype posix-egrep -regex ".*(EX|ex)$"); do rm -f $i; done
 	popd
 	#tar -cvf ${deb_tar_gz} "debian"
 	#rm -rf "debian"
