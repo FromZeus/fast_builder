@@ -16,25 +16,25 @@ main()
 {
 	pushd "package"
 	tarName=$(find . -name "*.tar.gz")
-	tarName=${tarName#./}
-	packageName=$tarName
-	if [ "${packageName}" = "" ]
+
+	if [[ "${tarName}" == "" ]]
 		then
-			echo "No package in the directory"
 			exit 1
 	fi
 
+	tarName=${tarName#./}
+	packageName=$tarName
 	packageName=${packageName%.tar.gz}
 	packageName=${packageName,,}
 	packageName=${packageName//[_]/-}
 
 	mkdir "python-${packageName}"
 	pushd "python-${packageName}"
-	tar -xvf "../${tarName}"
+	tar -xzvf "../${tarName}"
 
 	buf=${tarName%.tar.gz}
 	mv ${buf}/* .
-	rm -rf ${buf%.tar.gz}
+	rm -rf ${buf}
 
 	dh_make -e ${email} -f "../${tarName}" -s -y
 
@@ -50,11 +50,13 @@ main()
 	popd
 	deb_tar_gz=$(find . -name "*.debian.tar.gz")
 	orig_tar_gz=$(find . -name "*.orig.tar.gz")
-	tar -xvf ${deb_tar_gz}
-	tar -xvf ${orig_tar_gz}
+	tar -xzvf ${deb_tar_gz}
+	tar -xzvf ${orig_tar_gz}
 	pushd "debian"
-	for i in $(find . -regextype posix-egrep -regex ".*(EX|ex)$"); do rm -f $i; done
+	for i in $(find . -regextype posix-egrep -regex "*(.EX|.ex|README.debian)$"); do rm -f $i; done
 	popd
+	rm -rf "python-${packageName}"
+	for i in $(find . -regextype posix-egrep -regex ".*(dsc|changes|debian.tar.gz|orig.tar.gz)$"); do rm -f $i; done
 	#tar -cvf ${deb_tar_gz} "debian"
 	#rm -rf "debian"
 }
