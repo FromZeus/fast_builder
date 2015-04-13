@@ -206,11 +206,14 @@ def filter_packs(line, control_base):
 	    res_pack_name_part = part_of_package(res_pack_name, control_base.keys())
 
 	    if len(req_pack_name) <= 1 \
-	            or req_pack_name.startswith('__')\
-	            or req_pack_name.endswith('.py')\
-	            or req_pack_name.endswith('.rst'):
-	        return None
-	    elif res_pack_name_part:
+				or req_pack_name.startswith('__')\
+				or req_pack_name.endswith('.py')\
+				or req_pack_name.endswith('.rst')\
+				or not res_pack_name_part:
+			if res_pack_name:
+				print "Unknown package: {0}".format(res_pack_name)
+			return None
+	    else:
 	        return res_pack_name_part
 	elif imp or frm:
 		try:
@@ -230,6 +233,10 @@ def filter_packs(line, control_base):
 			return res_pack_name_frm_part
 		elif imp and res_pack_name_imp_part:
 			return res_pack_name_imp_part
+		elif res_pack_name_imp and not res_pack_name_imp_part:
+			print "Unknown pakcage: {0}".format(res_pack_name_imp)
+		elif res_pack_name_frm and not res_pack_name_frm_part:
+			print "Unknown package: {0}".format(res_pack_name_frm_part)
 	return None
 
 def part_of_package(package, packages):

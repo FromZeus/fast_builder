@@ -40,7 +40,7 @@ main()
 
 	popd
 	popd
-	python builder.py -c "config.yaml"
+	python builder.py -c "config.yaml" > builder.log
 	pushd "package"
 	pushd "python-${packageName}"
 
