@@ -118,7 +118,7 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 
 	excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
 		"python-argparse" : {}, "python-ordereddict" : {},
-		"python-multiprocessing": {}, "python-os": {}}
+		"python-multiprocessing": {}, "python-os": {}, section_dict["Package"]: {}}
 
 	packets_from_py = recur_search(names = py_file_names,
 		control_base = control_base, search_type = "grep")
@@ -153,6 +153,8 @@ def get_dependencies(global_req,
 			depends = dict([(base_control[key], {format_sign(el) for el in global_req[key]})
 				for key, val in depends.items()
 					if check_in_base(base_control, key) and global_req.has_key(key)])
+
+			depends = dict(depends.items() + {"${shlibs:Depends}": {}, "${misc:Depends}": {}}.items())
 	
 			for line in req_file:
 				req_pack = packageName.search(line)
@@ -227,6 +229,8 @@ def filter_packs(line, control_base):
 	    else:
 	        return res_pack_name_part
 	elif imp or frm:
+		res_pack_name_frm = res_pack_name_imp = \
+		res_pack_name_frm_part = res_pack_name_imp_part = ""
 		try:
 			res_pack_name_frm = "python-" + re.sub("[_]", "-",
 				packageNameEnd.search(frm.group(0)).group(0))

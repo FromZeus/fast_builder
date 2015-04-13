@@ -1,29 +1,21 @@
 Unknown pakcage: python-os
 Unknown pakcage: python-sys
-Unknown pakcage: python-setup
-Unknown pakcage: python-setup
-Unknown package: python-README
-Unknown package: python-name
-Unknown package: python-version
-Unknown package: python-license
-Unknown package: python-author
-Unknown package: python-author-email
-Unknown package: python-description
-Unknown package: python-long-description
-Unknown package: python-url
-Unknown package: python-classifiers
-Unknown package: python-packages
-Unknown package: python-test-suite
-Unknown package: python-ext-modules
-Sourcepython-trollius
+Unknown pakcage: python-get-python-lib
+Unknown pakcage: python-find-packages
+Unknown package: None
+Unknown package: python-install
+Unknown package: python-bcrypt
+Unknown package: None
+Unknown package: python-existing-path
+Sourcepython-django
 Sectionpython
 Priorityoptional
 Maintainerdtrishkin <dtrishkin@mirantis.com>
-Build-Depends{'python-setuptools': {}, 'debhelper': set([('>=', '9')]), 'python-all': {}, 'python-dev': {}}
+Build-Depends{'python-setuptools': {}, 'debhelper': set([('>=', '9')]), 'python-dev': {}, 'python-all': {}}
 Build-Depends-IndepNone
 Standards-Version3.9.4
 Homepage<insert the upstream URL, if relevant>
-Packagepython-trollius
+Packagepython-django
 Architectureany
-Depends{u'python-concurrent-futures': set([('>=', '2.1.6')])}
+Depends{'${shlibs:Depends}': {}, '${misc:Depends}': {}}
 Description<insert up to 60 chars description>
