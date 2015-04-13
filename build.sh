@@ -44,9 +44,6 @@ main()
 	python builder.py -c "config.yaml" > builder.log
 	pushd "package"
 	pushd "python-${packageName}"
-	pushd "debian"
-	echo "$(cat rules)--buildsystem=python_distutils --with python2" > rules
-	popd
 	
 	set DEB_BUILD_OPTIONS=nocheck
 	dpkg-buildpackage -rfakeroot -us -uc

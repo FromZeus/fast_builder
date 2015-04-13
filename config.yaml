@@ -1,3 +1,4 @@
+# control section
 Source:
 Section: "python"
 Priority:
@@ -9,9 +10,15 @@ Homepage:
 Package:
 Architecture:
 Depends:
-  #"pbr": [{">" : 0.5}]
 Description:
 
+# Credentials section
 Login: dtrishkin@mirantis.com
 Password: ""
 Branch: master
+
+# rules section
+# pybuild, python_distutils
+Buildsystem: python_distutils
+# python2, python3
+BuildWith: python2

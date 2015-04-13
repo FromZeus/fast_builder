@@ -68,6 +68,9 @@ def main():
 						{(el1.items()[0]) for el1 in section_dict["Depends"][el]}
 			section_dict["Description"] = line["Description"]
 
+			build_system = line["Buildsystem"]
+			build_with = line["BuildWith"]
+
 			load_control()
 
 			if global_branch == 'master':
@@ -92,7 +95,8 @@ def main():
 				if section_dict.has_key(el):
 					print "{0}{1}".format(el, section_dict[el])
 
-			build_control()
+			generate_control()
+			generate_rules(build_system, build_with)
 		conf.close()
 
 	except KeyboardInterrupt:
@@ -272,7 +276,7 @@ def load_control(control_file_name = "control"):
 	except IOError:
 		print "There is no control file!"
 
-def build_control(control_file_name = "control"):
+def generate_control(control_file_name = "control"):
 	try:
 		with open(recur_search(control_file_name), "w+") as control_file:
 			for el in section_list:
@@ -298,5 +302,26 @@ def build_control(control_file_name = "control"):
 								control_file.write(" {0},\n".format(key))
 	except IOError:
 		print "Error while overwriting control file!"
+
+def generate_rules(build_system, build_with, rules_file_name = "rules"):
+	try:
+		content = []
+		with open(recur_search(rules_file_name), "r") as rules_file:
+			for line in rules_file.readlines():
+				if "dh $@" in line:
+					res_line = line
+					if build_system and build_with:
+						res_line = line.rstrip() + " --buildsystem={0} --with {1}".format(build_system, build_with)
+					elif build_system:
+						res_line = line.rstrip() + " --buildsystem={0}".format(build_system)
+					content.append(res_line)
+				else:
+					content.append(line)
+
+		with open(recur_search(rules_file_name), "w+") as rules_file:
+			rules_file.writelines(content)
+
+	except IOError:
+		print "Error while overwriting rules file!"
 
 main()
