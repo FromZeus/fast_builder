@@ -47,12 +47,14 @@ def main():
 
 			if section_dict["Build-Depends"]:
 				for el in section_dict["Build-Depends"].keys():
-					section_dict["Build-Depends"][el] = {(el1.items()[0]) for el1 in section_dict["Build-Depends"][el]}
+					section_dict["Build-Depends"][el] = \
+						{(el1.items()[0]) for el1 in section_dict["Build-Depends"][el]}
 
 			section_dict["Build-Depends-Indep"] = line["Build-Depends-Indep"]
 			if section_dict["Build-Depends-Indep"]:
 				for el in section_dict["Build-Depends-Indep"].keys():
-					section_dict["Build-Depends-Indep"][el] = {(el1.items()[0]) for el1 in section_dict["Build-Depends-Indep"][el]}
+					section_dict["Build-Depends-Indep"][el] = \
+						{(el1.items()[0]) for el1 in section_dict["Build-Depends-Indep"][el]}
 
 			section_dict["Standards-Version"] = line["Standards-Version"]
 			section_dict["Homepage"] = line["Homepage"]
@@ -62,7 +64,8 @@ def main():
 
 			if section_dict["Depends"]:
 				for el in section_dict["Depends"].keys():
-					section_dict["Depends"][el] = {(el1.items()[0]) for el1 in section_dict["Depends"][el]}
+					section_dict["Depends"][el] = \
+						{(el1.items()[0]) for el1 in section_dict["Depends"][el]}
 			section_dict["Description"] = line["Description"]
 
 			load_control()
@@ -80,8 +83,10 @@ def main():
 			global_req = require_utils.Require.parse_req(
 				lan.get_requirements_from_url(req_url, gerritAccount))
 
-			section_dict["Depends"] = get_dependencies(global_req, section_dict["Depends"])
-			section_dict["Build-Depends"] = get_build_dependencies(global_req, section_dict["Build-Depends"])
+			section_dict["Depends"] = get_dependencies(global_req,
+				section_dict["Depends"])
+			section_dict["Build-Depends"] = get_build_dependencies(global_req,
+				section_dict["Build-Depends"])
 			
 			for el in section_list:
 				if section_dict.has_key(el):
@@ -112,9 +117,11 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 		"python-dev" : {}, "debhelper" : {(">=", "9")}}.items())
 
 	excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
-		"python-argparse" : {}, "python-ordereddict" : {}, "python-multiprocessing": {}, "python-os": {}}
+		"python-argparse" : {}, "python-ordereddict" : {},
+		"python-multiprocessing": {}, "python-os": {}}
 
-	packets_from_py = recur_search(names = py_file_names, control_base = control_base, search_type = "grep")
+	packets_from_py = recur_search(names = py_file_names,
+		control_base = control_base, search_type = "grep")
 	if packets_from_py:
 		build_depends = dict(build_depends.items() + packets_from_py.items())
 
@@ -131,7 +138,10 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 
 	return build_depends
 
-def get_dependencies(global_req, depends, req_file_names = ["requires.txt", "requirements.txt"], update = True):
+def get_dependencies(global_req,
+	depends,
+	req_file_names = ["requires.txt", "requirements.txt"],
+	update = True):
 	if not depends:
 		depends = dict()
 	try:
@@ -200,15 +210,16 @@ def filter_packs(line, control_base):
 	if req_pack:
 	    req_pack_name = req_pack.group(0)[1:-1:]
 	    try:
-	    	res_pack_name = "python-" + re.sub("[_]", "-", packageName.search(req_pack_name).group(0))
+	    	res_pack_name = "python-" + re.sub("[_]", "-",
+	    		packageName.search(req_pack_name).group(0))
 	    except Exception:
 	    	return None
 	    res_pack_name_part = part_of_package(res_pack_name, control_base.keys())
 
 	    if len(req_pack_name) <= 1 \
-				or req_pack_name.startswith('__')\
-				or req_pack_name.endswith('.py')\
-				or req_pack_name.endswith('.rst')\
+				or req_pack_name.startswith('__') \
+				or req_pack_name.endswith('.py') \
+				or req_pack_name.endswith('.rst') \
 				or not res_pack_name_part:
 			if res_pack_name:
 				print "Unknown package: {0}".format(res_pack_name)
@@ -252,7 +263,8 @@ def load_control(control_file_name = "control"):
 				for el in section_dict.keys():
 					if el not in dep_sects_list and el in line:
 						if not section_dict[el]:
-							section_dict[el] = re.sub(":\s+", "", sectTemplate.search(line).group(0))
+							section_dict[el] = re.sub(":\s+", "",
+								sectTemplate.search(line).group(0))
 	except IOError:
 		print "There is no control file!"
 
@@ -272,9 +284,11 @@ def build_control(control_file_name = "control"):
 							if val:
 								for el2 in val:
 									if el2[0] == "!=":
-										control_file.write(" {0} (<< {1}) | {0} (>> {1}),".format(key, el2[1]))
+										control_file.write(" {0} (<< {1}) | {0} (>> {1})," \
+											.format(key, el2[1]))
 									else:
-										control_file.write(" {0} ({1} {2}),".format(key, el2[0], el2[1]))
+										control_file.write(" {0} ({1} {2})," \
+											.format(key, el2[0], el2[1]))
 								control_file.write("\n")
 							else:
 								control_file.write(" {0},\n".format(key))
