@@ -26,6 +26,7 @@ main()
 
 	packageName=${packageName%.tar.gz}
 	packageName=${packageName,,}
+	packageName=${packageName//[_]/-}
 
 	mkdir "python-${packageName}"
 	pushd "python-${packageName}"
@@ -45,7 +46,7 @@ main()
 
 	set DEB_BUILD_OPTIONS=nocheck 
 	dpkg-buildpackage -rfakeroot -us -uc
-#
+	
 	popd
 	deb_tar_gz=$(find . -name "*.debian.tar.gz")
 	orig_tar_gz=$(find . -name "*.orig.tar.gz")
@@ -56,7 +57,6 @@ main()
 	popd
 	#tar -cvf ${deb_tar_gz} "debian"
 	#rm -rf "debian"
-
 }
 
 if [ $# -eq 0 ]

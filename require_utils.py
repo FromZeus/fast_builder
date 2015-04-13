@@ -119,7 +119,7 @@ class Require:
     # This function is for getting package names from control file
     @staticmethod
     def get_packs_control(inp):
-        sections = ["Build-Depends-Indep:", "Build-Depends:", "Depends:"]
+        sections = ["Build-Depends-Indep:", "Build-Depends:", "Depends:", "Suggests:", "Recommends:", "Pre-Depends:"]
         res = dict((el, set()) for el in sections)
         sectEnable = ""
         for line in inp:

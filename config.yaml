@@ -9,9 +9,9 @@ Homepage:
 Package:
 Architecture:
 Depends:
-  "pbr": [{">" : 0.5}]
+  #"pbr": [{">" : 0.5}]
 Description:
 
 Login: dtrishkin@mirantis.com
-Password:
+Password: ""
 Branch: master

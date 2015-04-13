@@ -14,9 +14,10 @@ args = parser.parse_args()
 
 packageName = re.compile("[a-zA-Z0-9-_.]+")
 packageNameEnd = re.compile("[a-zA-Z0-9-_.]+$")
-grepTemplate0 = re.compile("import [a-zA-Z0-9-_.]+")
-grepTemplate1 = re.compile("from [a-zA-Z0-9-_.]+")
+impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
+fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
+build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 
 dep_sects_list = ["Depends", "Build-Depends", "Build-Depends-Indep"]
 section_list = ["Source", "Section", "Priority", "Maintainer",
@@ -113,8 +114,9 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 	excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
 		"python-argparse" : {}, "python-ordereddict" : {}, "python-multiprocessing": {}, "python-os": {}}
 
-	build_depends = dict(build_depends.items() +
-		recur_search(names = py_file_names, search_type = "grep").items())
+	packets_from_py = recur_search(names = py_file_names, control_base = control_base, search_type = "grep")
+	if packets_from_py:
+		build_depends = dict(build_depends.items() + packets_from_py.items())
 
 	for el in excepts:
 		if build_depends.has_key(el):
@@ -168,10 +170,10 @@ def format_sign(el):
 	else:
 		return el
 
-def recur_search(names, relative_path = ".", search_type = "default"):
+def recur_search(names, relative_path = ".", search_type = "default", control_base = None):
 	for el in listdir(relative_path):
 		if isdir(join(relative_path, el)) and el not in ["doc"]:
-			path = recur_search(names, join(relative_path, el), search_type)
+			path = recur_search(names, join(relative_path, el), search_type, control_base)
 			if path:
 				return path
 		else:
@@ -180,17 +182,60 @@ def recur_search(names, relative_path = ".", search_type = "default"):
 					with open(join(relative_path, el),'r') as grep_file:
 						res_grep = dict()
 						for line in grep_file:
-							imp = grepTemplate0.search(line)
-							frm = grepTemplate1.search(line)
-							if imp:
-								res_grep.setdefault("python-" + re.sub("[_]", "-", packageNameEnd.search(imp.group(0)).group(0)), {})
-							if frm:
-								res_grep.setdefault("python-" + re.sub("[_]", "-", packageNameEnd.search(frm.group(0)).group(0)), {})
+							filtered_package = filter_packs(line, control_base)
+							if filtered_package:
+								res_grep.setdefault(filtered_package, {})
 						return res_grep
 				except IOError:
 					None
 			elif el in names:
 				return join(relative_path, el)
+	return None
+
+def filter_packs(line, control_base):
+	req_pack = build_depends.search(line)
+	imp = impTemplate.search(line)
+	frm = fromTemplate.search(line)
+
+	if req_pack:
+	    req_pack_name = req_pack.group(0)[1:-1:]
+	    try:
+	    	res_pack_name = "python-" + re.sub("[_]", "-", packageName.search(req_pack_name).group(0))
+	    except Exception:
+	    	return None
+	    res_pack_name_part = part_of_package(res_pack_name, control_base.keys())
+
+	    if len(req_pack_name) <= 1 \
+	            or req_pack_name.startswith('__')\
+	            or req_pack_name.endswith('.py')\
+	            or req_pack_name.endswith('.rst'):
+	        return None
+	    elif res_pack_name_part:
+	        return res_pack_name_part
+	elif imp or frm:
+		try:
+			res_pack_name_frm = "python-" + re.sub("[_]", "-",
+				packageNameEnd.search(frm.group(0)).group(0))
+			res_pack_name_frm_part = part_of_package(res_pack_name_frm, control_base.keys())
+		except Exception:
+			None
+		try:
+			res_pack_name_imp = "python-" + re.sub("[_]", "-",
+				packageNameEnd.search(imp.group(0)).group(0))
+			res_pack_name_imp_part = part_of_package(res_pack_name_imp, control_base.keys())
+		except Exception:
+			None
+
+		if imp and frm and res_pack_name_frm_part:
+			return res_pack_name_frm_part
+		elif imp and res_pack_name_imp_part:
+			return res_pack_name_imp_part
+	return None
+
+def part_of_package(package, packages):
+	for el in packages:
+		if el in package:
+			return el
 	return None
 
 def load_control(control_file_name = "control"):
