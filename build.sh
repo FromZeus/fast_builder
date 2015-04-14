@@ -27,9 +27,16 @@ main()
 	packageName=${packageName%.tar.gz}
 	packageName=${packageName,,}
 	packageName=${packageName//[_]/-}
-	
-	mkdir "python-${packageName}"
-	pushd "python-${packageName}"
+
+	if echo "$packageName" | grep -q "python-"; then
+		mkdir "${packageName}";
+		dirName="${packageName}";
+	else
+ 		mkdir "python-${packageName}";
+ 		dirName="${packageName}";
+	fi
+
+	pushd "${dirName}"
 	tar -xzvf "../${tarName}"
 	
 	buf=${tarName%.tar.gz}
@@ -43,7 +50,7 @@ main()
 	popd
 	python builder.py -c "config.yaml" > builder.log
 	pushd "package"
-	pushd "python-${packageName}"
+	pushd "${dirName}"
 	
 	set DEB_BUILD_OPTIONS=nocheck
 	dpkg-buildpackage -rfakeroot -us -uc

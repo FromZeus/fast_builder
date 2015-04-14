@@ -1,14 +1,20 @@
-Unknown package: python-License
-Unknown pakcage: python-setuptools
-Sourcepython-gabbi
+Unknown pakcage: python-os
+Unknown pakcage: python-sys
+Unknown pakcage: python-setup
+Unknown pakcage: python-get-python-lib
+Unknown package: None
+Unknown package: python-install
+Unknown package: None
+Unknown package: python-existing-path
+Sourcepython-django
 Sectionpython
 Priorityoptional
-Maintainerdtrishkin <dtrishkin@mirantis.com>
-Build-Depends{'python-setuptools': {}, 'debhelper': set([('>=', '9')]), 'python-all': {}, 'python-dev': {}}
+MaintainerMichael Ivanov <mivanov@mirantis.com>
+Build-Depends{'python-setuptools': {}, 'debhelper': set([('>=', '9')]), 'python-dev': {}, 'python-all': {}}
 Build-Depends-IndepNone
 Standards-Version3.9.4
 Homepage<insert the upstream URL, if relevant>
-Packagepython-gabbi
+Packagepython-django
 Architectureany
-Depends{u'python-yaml': set([('>=', '3.1.0')]), '${shlibs:Depends}': {}, '${misc:Depends}': {}, u'python-jsonpath-rw': set([('>=', '1.2.0'), ('<<', '2.0')]), u'python-httplib2': set([('>=', '0.7.5')]), u'python-six': set([('>=', '1.9.0')]), u'python-testtools': set([('>=', '0.9.36'), ('!=', '1.2.0')]), u'python-pbr': set([('>=', '0.6'), ('<<', '1.0'), ('!=', '0.7')])}
+Depends{'${shlibs:Depends}': {}, '${misc:Depends}': {}}
 Description<insert up to 60 chars description>
