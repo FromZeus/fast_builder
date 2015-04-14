@@ -1,14 +1,3 @@
-Unknown package: python-License
-Unknown pakcage: python-setuptools
-Sourcepython-gabbi
-Sectionpython
-Priorityoptional
-Maintainerdtrishkin <dtrishkin@mirantis.com>
-Build-Depends{'python-setuptools': {}, 'debhelper': set([('>=', '9')]), 'python-all': {}, 'python-dev': {}}
-Build-Depends-IndepNone
-Standards-Version3.9.4
-Homepage<insert the upstream URL, if relevant>
-Packagepython-gabbi
-Architectureany
-Depends{u'python-yaml': set([('>=', '3.1.0')]), '${shlibs:Depends}': {}, '${misc:Depends}': {}, u'python-jsonpath-rw': set([('>=', '1.2.0'), ('<<', '2.0')]), u'python-httplib2': set([('>=', '0.7.5')]), u'python-six': set([('>=', '1.9.0')]), u'python-testtools': set([('>=', '0.9.36'), ('!=', '1.2.0')]), u'python-pbr': set([('>=', '0.6'), ('<<', '1.0'), ('!=', '0.7')])}
-Description<insert up to 60 chars description>
+There is no requirements!
+Unknown package: python-setup
+Unknown package: python-setup

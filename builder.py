@@ -91,9 +91,9 @@ def main():
 			section_dict["Build-Depends"] = get_build_dependencies(global_req,
 				section_dict["Build-Depends"])
 			
-			for el in section_list:
-				if section_dict.has_key(el):
-					print "{0}{1}".format(el, section_dict[el])
+			#for el in section_list:
+			#	if section_dict.has_key(el):
+			#		print "{0}{1}".format(el, section_dict[el])
 
 			generate_control()
 			generate_rules(build_system, build_with)
@@ -148,18 +148,17 @@ def get_dependencies(global_req,
 	update = True):
 	if not depends:
 		depends = dict()
+	base_control_file = open("base-control.json", "r")
+	base_control = json.load(base_control_file)
+	
+	# Change "reuirements" style to "control" style signs and update requirements
+	depends = dict([(base_control[key], {format_sign(el) for el in global_req[key]})
+		for key, val in depends.items()
+			if check_in_base(base_control, key) and global_req.has_key(key)])
+
+	depends = dict(depends.items() + {"${shlibs:Depends}": {}, "${misc:Depends}": {}}.items())
 	try:
 		with open(recur_search(req_file_names), 'r') as req_file:
-			base_control_file = open("base-control.json", "r")
-			base_control = json.load(base_control_file)
-	
-			# Change "reuirements" style to "control" style signs and update requirements
-			depends = dict([(base_control[key], {format_sign(el) for el in global_req[key]})
-				for key, val in depends.items()
-					if check_in_base(base_control, key) and global_req.has_key(key)])
-
-			depends = dict(depends.items() + {"${shlibs:Depends}": {}, "${misc:Depends}": {}}.items())
-	
 			for line in req_file:
 				req_pack = packageName.search(line)
 				if req_pack:
@@ -168,7 +167,7 @@ def get_dependencies(global_req,
 						depends.setdefault(base_control[req_pack_name],
 							{format_sign(el1) for el1 in global_req[req_pack_name]})
 			base_control_file.close()
-	except IOError:
+	except (IOError, TypeError):
 		print "There is no requirements!"
 	return depends
 
@@ -222,7 +221,7 @@ def filter_packs(line, control_base):
 	    	return None
 	    res_pack_name_part = part_of_package(res_pack_name, control_base.keys())
 
-	    if len(req_pack_name) <= 1 \
+		if len(req_pack_name) <= 1 \
 				or req_pack_name.startswith('__') \
 				or req_pack_name.endswith('.py') \
 				or req_pack_name.endswith('.rst') \
@@ -230,8 +229,8 @@ def filter_packs(line, control_base):
 			if res_pack_name:
 				print "Unknown package: {0}".format(res_pack_name)
 			return None
-	    else:
-	        return res_pack_name_part
+		else:
+			return res_pack_name_part
 	elif imp or frm:
 		res_pack_name_frm = res_pack_name_imp = \
 		res_pack_name_frm_part = res_pack_name_imp_part = ""
@@ -253,7 +252,7 @@ def filter_packs(line, control_base):
 		elif imp and res_pack_name_imp_part:
 			return res_pack_name_imp_part
 		elif res_pack_name_imp and not res_pack_name_imp_part:
-			print "Unknown pakcage: {0}".format(res_pack_name_imp)
+			print "Unknown package: {0}".format(res_pack_name_imp)
 		elif res_pack_name_frm and not res_pack_name_frm_part:
 			print "Unknown package: {0}".format(res_pack_name_frm_part)
 	return None
@@ -300,7 +299,7 @@ def generate_control(control_file_name = "control"):
 								control_file.write("\n")
 							else:
 								control_file.write(" {0},\n".format(key))
-	except IOError:
+	except (IOError, TypeError):
 		print "Error while overwriting control file!"
 
 def generate_rules(build_system, build_with, rules_file_name = "rules"):

@@ -1,4 +1,4 @@
-# control section
+# general control section
 Source:
 Section: "python"
 Priority:
@@ -7,10 +7,26 @@ Build-Depends:
 Build-Depends-Indep:
 Standards-Version:
 Homepage:
+
+# packages section
+# "Package" is necessary field
 Package:
-Architecture:
-Depends:
-Description:
+  "a":
+    - Architecture:
+    - Depends:
+    - Conflicts:
+    - Replaces:
+    - Recommends:
+    - Suggests:
+    - Description:
+  "b":
+    - Architecture:
+    - Depends:
+    - Conflicts:
+    - Replaces:
+    - Recommends:
+    - Suggests:
+    - Description:
 
 # Credentials section
 Login: dtrishkin@mirantis.com
