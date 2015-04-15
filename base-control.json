@@ -169,7 +169,7 @@
     "simplejson":"python-simplejson",
     "six":"python-six",
     "sphinx":"python-sphinx",
-    "sphinxcontrib-docbookrestapi":"sphinxdoc",
+    "sphinxcontrib-docbookrestapi":"python-sphinxcontrib-docbookrestapi",
     "sphinxcontrib-httpdomain":"python-sphinxcontrib-httpdomain",
     "sphinxcontrib-pecanwsme":"python-sphinxcontrib-pecanwsme",
     "sqlalchemy-migrate":"python-migrate",
