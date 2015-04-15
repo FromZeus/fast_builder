@@ -13,16 +13,22 @@ Homepage:
 Package:
   "a":
     - Architecture:
+    - Section:
     - Depends:
     - Conflicts:
+    - Provides:
+    - Breaks:
     - Replaces:
     - Recommends:
     - Suggests:
     - Description:
   "b":
     - Architecture:
+    - Section:
     - Depends:
     - Conflicts:
+    - Provides:
+    - Breaks:
     - Replaces:
     - Recommends:
     - Suggests:

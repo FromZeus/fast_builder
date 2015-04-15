@@ -19,7 +19,8 @@ fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 
-dep_sects_list = ["Depends", "Build-Depends", "Build-Depends-Indep"]
+dep_sects_list = ["Depends", "Build-Depends", "Build-Depends-Indep",
+"Conflicts", "Provides", "Breaks", "Replaces", "Recommends", "Suggests"]
 section_list = ["Source", "Section", "Priority", "Maintainer",
 "Build-Depends", "Build-Depends-Indep", "Standards-Version",
 "Homepage", "Package", "Architecture", "Depends", "Description"]
