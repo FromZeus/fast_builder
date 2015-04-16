@@ -18,6 +18,7 @@ impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
+package_with_version = re.compile("[a-zA-Z0-9-_.]+\s*(\((>>|<<|=|>=|<=)+\s*(\d[.]*)+\))*,")
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
 dep_sects_list = ["Depends", "Conflicts", "Provides", "Breaks",
@@ -280,6 +281,9 @@ def part_of_package(package, packages):
 		if el in package:
 			return el
 	return None
+
+def parse_packaegs(line):
+
 
 def load_control(control_file_name = "control"):
 	try:
