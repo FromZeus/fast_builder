@@ -19,7 +19,7 @@ fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
-	re.compile("^[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*)" \
+	re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*)" \
 		"(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*){,1}\)){,1},")
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
