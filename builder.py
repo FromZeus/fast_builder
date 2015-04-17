@@ -12,7 +12,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
 args = parser.parse_args()
 
-packageName = re.compile("[a-zA-Z0-9-_.]+")
+packageName = re.compile("(\d*[a-zA-Z-_.]\d*)+")
+packageEq = re.compile("(>=|<=|>|<|==|!=)+")
+packageVers = re.compile("(\d[.]*)+")
 packageNameEnd = re.compile("[a-zA-Z0-9-_.]+$")
 impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
@@ -20,7 +22,8 @@ sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
 	re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*)" \
-		"(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*){,1}\)){,1},")
+		"(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*){,1}\)){,1}")
+package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
 dep_sects_list = ["Depends", "Conflicts", "Provides", "Breaks",
@@ -284,7 +287,7 @@ def part_of_package(package, packages):
 			return el
 	return None
 
-def parse_packaegs(line):
+#def parse_packaegs(line):
 
 
 def load_control(control_file_name = "control"):
@@ -300,10 +303,30 @@ def load_control(control_file_name = "control"):
 				else:
 					for package_sect in package_section_list:
 						if package_sect in line:
+							dep_flag = ""
 							if package_sect in dep_sects_list:
-								
+								dep_flag = package_sect
+								entry_list = [it.start() for it in
+									package_with_version.finditer(line)]
+								for pack_idx in entry_list:
+									pack = package_with_version.search(line[pack_idx:]).group(0)
+									pack_name = packageName.search(pack)
+									pack_eq = packageEq.search(pack)
+									pack_ver = packageVers.search(pack)
+									# weak place: if (<< 0.5 | >> 0.7) will be != 0.5
+									# instead of range != 0.5, != 0.6, != 0.7
+									if package_ver_not_equal.search(pack):
+										pack_el = "!="
+									if section_dict["Package"][cur_package][pack_sect]. \
+										has_key(pack_name):
+										section_dict["Package"][cur_package][pack_sect][pack_name]. \
+											add((pack_eq, pack_ver))
+									else:
+										section_dict["Package"][cur_package][pack_sect][pack_name] = \
+											{(pack_eq, pack_ver)}
 							else:
-								
+								section_dict["Package"][cur_package][package_sect] = \
+									re.sub(":\s+", "", sectTemplate.search(line).group(0))
 				if "Package:" in line:
 					cur_package = re.sub(":\s+", "",
 						sectTemplate.search(line).group(0))
