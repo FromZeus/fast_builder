@@ -29,11 +29,11 @@ main()
 	packageName=${packageName//[_]/-}
 
 	if echo "$packageName" | grep -q "python-"; then
-		mkdir "${packageName}";
-		dirName="${packageName}";
+		mkdir "${packageName}"
+		dirName="${packageName}"
 	else
- 		mkdir "python-${packageName}";
- 		dirName="${packageName}";
+ 		mkdir "python-${packageName}"
+ 		dirName="python-${packageName}"
 	fi
 
 	pushd "${dirName}"
