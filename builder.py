@@ -38,7 +38,7 @@ package_section_list = ["Architecture", "Section", "Depends", "Conflicts",
 section_dict = dict()
 
 def main():
-    pdb.set_trace()
+    #pdb.set_trace()
     try:
         conf = open(args.config, 'r')
         tempConf = yaml.load_all(conf)
@@ -81,6 +81,13 @@ def main():
             section_dict["Homepage"] = line["Homepage"]
             section_dict["Package"] = line["Package"]
 
+            path_to_debian_dir = recur_search("debian")
+            if len(section_dict["Package"]) > 1:
+                for pack_name, pack_val in section_dict["Package"].iteritems():
+                    if pack_val["Files"]:
+                        with open(join(path_to_debian_dir, "{0}.install".format(pack_name)), "w+") as pack_install:
+                            pack_install.writelines(re.sub(";\s+", "\n", pack_val["Files"]))
+
             for el in section_dict["Package"].keys():
                 for dep_sect in dep_sects_list:
                     if section_dict["Package"][el][dep_sect]:
@@ -94,29 +101,14 @@ def main():
             #   for el in section_dict["Package"].keys():
 
 
-            #section_dict["Architecture"] = line["Architecture"]
-            #section_dict["Depends"] = line["Depends"]
-
-            #if section_dict["Depends"]:
-            #   for el in section_dict["Depends"].keys():
-            #       section_dict["Depends"][el] = \
-            #           {(el1.items()[0]) for el1 in section_dict["Depends"][el]}
-            #section_dict["Description"] = line["Description"]
-
             build_system = line["Buildsystem"]
             build_with = line["BuildWith"]
 
             load_control()
 
-            #section_dict["Depends"] = get_dependencies(global_req,
-            #   section_dict["Depends"])
             section_dict["Build-Depends"] = get_build_dependencies(global_req,
                section_dict["Build-Depends"])
             
-            #for el in section_list:
-            #   if section_dict.has_key(el):
-            #       print "{0}{1}".format(el, section_dict[el])
-
             generate_control()
             generate_rules(build_system, build_with)
         conf.close()
@@ -150,10 +142,11 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
         "python-argparse" : {}, "python-ordereddict" : {},
         "python-multiprocessing": {}, "python-os": {}, section_dict["Source"]: {}}
 
-    packets_from_py = recur_search(names = py_file_names,
-        control_base = control_base, search_type = "grep")
-    if packets_from_py:
-        build_depends = dict(build_depends.items() + packets_from_py.items())
+    for py_file in py_file_names:
+        path_to_py = recur_search(names = py_file, control_base = control_base)
+        packets_from_py = load_packs(path_to_py, control_base)
+        if packets_from_py:
+            build_depends = dict(build_depends.items() + packets_from_py.items())
 
     for el in excepts:
         if build_depends.has_key(el):
@@ -211,26 +204,26 @@ def format_sign(el):
     else:
         return el
 
+def load_packs(path, control_base):
+    try:
+        with open(path, 'r') as grep_file:
+            res_grep = dict()
+            for line in grep_file:
+                filtered_package = filter_packs(line, control_base)
+                if filtered_package:
+                    res_grep.setdefault(filtered_package, {})
+            return res_grep
+    except IOError:
+        return None
+
 def recur_search(names, relative_path = ".", search_type = "default", control_base = None):
     for el in listdir(relative_path):
-        if isdir(join(relative_path, el)) and el not in ["doc"]:
-            path = recur_search(names, join(relative_path, el), search_type, control_base)
+        if el in names:
+            return join(relative_path, el)
+        elif isdir(join(relative_path, el)) and el not in ["doc"]:
+            path = recur_search(names, join(relative_path, el), control_base)
             if path:
                 return path
-        else:
-            if search_type == "grep" and el in names:
-                try:
-                    with open(join(relative_path, el),'r') as grep_file:
-                        res_grep = dict()
-                        for line in grep_file:
-                            filtered_package = filter_packs(line, control_base)
-                            if filtered_package:
-                                res_grep.setdefault(filtered_package, {})
-                        return res_grep
-                except IOError:
-                    None
-            elif el in names:
-                return join(relative_path, el)
     return None
 
 def filter_packs(line, control_base):
@@ -300,8 +293,7 @@ def parse_packages(line, dep_flag, cur_package):
                     re.sub(":\s+", "", sectTemplate.search(line).group(0))
             return dep_flag
     if dep_flag in dep_sects_list:
-        entry_list = [it.start() for it in
-            package_with_version.finditer(line)]
+        entry_list = [it.start() for it in package_with_version.finditer(line)]
         for pack_idx in entry_list:
             pack = package_with_version.search(line[pack_idx:]).group(0)
             pack_name = packageName.search(pack)
@@ -311,8 +303,7 @@ def parse_packages(line, dep_flag, cur_package):
             # instead of range != 0.5, != 0.6, != 0.7
             if package_ver_not_equal.search(pack):
                 pack_eq = "!="
-            if section_dict["Package"][cur_package][dep_flag]. \
-                has_key(pack_name):
+            if section_dict["Package"][cur_package][dep_flag].has_key(pack_name):
                 section_dict["Package"][cur_package][dep_flag][pack_name]. \
                     add((pack_eq, pack_ver))
             else:
@@ -338,8 +329,6 @@ def load_control(control_file_name = "control"):
                 if "Package:" in line:
                     cur_package = re.sub(":\s+", "",
                         sectTemplate.search(line).group(0))
-                    #if section_dict["Package"][cur_package]:
-                    #    cur_package = ""
     except IOError:
         print "There is no control file!"
 
@@ -379,7 +368,6 @@ def generate_control(control_file_name = "control"):
                             write_packs(value[pack_sect])
                         else:
                             control_file.write("{0}: {1}\n".format(pack_sect, value[pack_sect]))
-                #control_file.write("\n")
     except (IOError, TypeError):
         print "Error while overwriting control file!"
 

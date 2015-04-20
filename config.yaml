@@ -24,6 +24,7 @@ Package:
     Recommends:
     Suggests:
     Description:
+    Files: "usr/bin; usr/lib"
   "python-django-common":
     Architecture: any
     Section:
@@ -36,6 +37,7 @@ Package:
     Recommends:
     Suggests:
     Description:
+    Files: "usr/share/django"
 # {"python-pbr-doc": {Architecture: "any", Section: "doc"}}
 
 # Credentials section
