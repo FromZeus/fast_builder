@@ -9,6 +9,10 @@ except()
 			echo "-e There have to be e-mail address: example@example.com"
 			exit 1
 			;;
+		-s)
+			echo "-s Stages are not specified"
+			exit 1
+			;;
 	esac
 }
 
@@ -89,6 +93,14 @@ do
 			fi
 			shift
 			;;
+		-s)
+			shift
+			if [ $# -gt 0 ]
+				then
+					email="$1"
+				else
+					except -s
+			fi
 		*)
 			shift
 			;;

@@ -85,8 +85,9 @@ def main():
             if len(section_dict["Package"]) > 1:
                 for pack_name, pack_val in section_dict["Package"].iteritems():
                     if pack_val["Files"]:
-                        with open(join(path_to_debian_dir, "{0}.install".format(pack_name)), "w+") as pack_install:
-                            pack_install.writelines(re.sub(";\s+", "\n", pack_val["Files"]))
+                        with open(join(path_to_debian_dir, "{0}.install".format(pack_name)), 
+                            "w+") as pack_install:
+                            pack_install.writelines(re.sub(";\s*", "\n", pack_val["Files"]))
 
             for el in section_dict["Package"].keys():
                 for dep_sect in dep_sects_list:
@@ -94,12 +95,6 @@ def main():
                         packages_processing(section_dict["Package"][el][dep_sect])
                 section_dict["Package"][el]["Depends"] = \
                     get_dependencies(global_req, section_dict["Package"][el]["Depends"])
-
-            #if len(section_dict["Package"]) == 1:
-
-            #else:
-            #   for el in section_dict["Package"].keys():
-
 
             build_system = line["Buildsystem"]
             build_with = line["BuildWith"]
