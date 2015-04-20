@@ -329,7 +329,8 @@ def load_control(control_file_name = "control"):
             for line in control_file:
                 if not cur_package:
                     for main_sect in main_section_list:
-                        if main_sect in line and not section_dict[main_sect]:
+                        if main_sect in line and not section_dict[main_sect] and \
+                            main_sect not in build_dep_sects_list:
                             section_dict[main_sect] = re.sub(":\s+", "",
                                 sectTemplate.search(line).group(0))
                 else:

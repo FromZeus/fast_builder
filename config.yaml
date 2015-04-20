@@ -3,7 +3,7 @@ Source:
 Section: "python"
 Priority:
 Maintainer:
-Build-Depends: {"python-django-common": []}
+Build-Depends:
 # {"pbr": [{">=", "0.5"}]}
 Build-Depends-Indep:
 Standards-Version:
@@ -40,7 +40,7 @@ Package:
 
 # Credentials section
 Login: dtrishkin@mirantis.com
-Password: "3393YEShq27ops"
+Password: ""
 Branch: master
 
 # rules section
