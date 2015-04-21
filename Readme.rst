@@ -19,7 +19,9 @@ How to use
 
 Configure config.yaml
 ^^^^^^^^^^^^^^^^^^^^^
+
 In the config.yaml file you can see fields with names same as in control file. Priority of this config is higher than control file, so all fields filled here would be rewritten with config's values. Also here are some fields that absent in config file, such as: "Files", "Login", "Password", "Branch", "Buildsystem", "BuildWith". The last three from rules file.
+
   - Files
     You can specify that for every package if here is more than one package. Example: "usr/bin;usr/lib" for main package; "usr/share/icons/; usr/share/package_name/; usr/share/locale/" - for common package. Every single location have to be separated with ";" symbol.
   - Login
