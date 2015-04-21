@@ -11,10 +11,13 @@ How to use
 ----------
 
 * Put .tar.gz archive of your packet into "package" dirrectory
+
 * `Configure config.yaml`_
+
 * Run "./build.sh -e example@example.com -s 1 2 3"
     * -e - Here you have to place your e-mail address
     * -s - `Stages of building`_
+
 * If all was configured well and nothing bad happens you could get your successully builded package!
 
 Configure config.yaml
