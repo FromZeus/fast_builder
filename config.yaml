@@ -3,8 +3,7 @@ Source:
 Section: "python"
 Priority:
 Maintainer:
-Build-Depends:
-# {"pbr": [{">=", "0.5"}]}
+Build-Depends: # {"pbr": [{">=", "0.5"}]}
 Build-Depends-Indep:
 Standards-Version:
 Homepage:
@@ -38,7 +37,6 @@ Package:
     Suggests:
     Description:
     Files: "usr/bin"
-# {"python-pbr-doc": {Architecture: "any", Section: "doc"}}
 
 # Credentials section
 Login: dtrishkin@mirantis.com
@@ -50,4 +48,3 @@ Branch: master
 Buildsystem: python_distutils
 # python2, python3
 BuildWith: python2
-Additional: 
