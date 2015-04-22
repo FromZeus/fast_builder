@@ -13,16 +13,16 @@ parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
 args = parser.parse_args()
 
 packageName = re.compile("(\d*[a-zA-Z-_.]\d*)+")
-packageEq = re.compile("(>=|<=|>|<|==|!=)+")
-packageVers = re.compile("(\d[.]*)+")
+packageEq = re.compile("(>=|<=|>>|<<|=|!=)+")
+packageVers = re.compile("(\d[.]*[a-z+-]*)+")
 packageNameEnd = re.compile("[a-zA-Z0-9-_.]+$")
 impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
-  re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*)" \
-    "(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*)+\s*){,1}\)){,1},")
+  re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|=|>=|<=)+\s*(\d[.]*[a-z+-]*)+\s*)" \
+    "(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*[a-z+-]*)+\s*){,1}\)){,1}")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
@@ -40,7 +40,7 @@ user_defined_in_main = set()
 user_defined_in_packets = dict()
 
 def main():
-  pdb.set_trace()
+  #pdb.set_trace()
   try:
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
@@ -70,8 +70,8 @@ def main():
       section_dict["Section"] = line["Section"]
       section_dict["Priority"] = line["Priority"]
       section_dict["Maintainer"] = line["Maintainer"]
+      section_dict["XSBC-Original-Maintainer"] = line["XSBC-Original-Maintainer"]
       section_dict["Build-Depends"] = line["Build-Depends"]
-
       if section_dict["Build-Depends"]:
         packages_processing(section_dict["Build-Depends"])
 
@@ -79,8 +79,13 @@ def main():
       if section_dict["Build-Depends-Indep"]:
         packages_processing(section_dict["Build-Depends-Indep"])
 
+      section_dict["Build-Conflicts"] = line["Build-Conflicts"]
+      section_dict["X-Python-Version"] = line["X-Python-Version"]
       section_dict["Standards-Version"] = line["Standards-Version"]
       section_dict["Homepage"] = line["Homepage"]
+      section_dict["Vcs-Svn"] = line["Vcs-Svn"]
+      section_dict["Vcs-Browser"] = line["Vcs-Browser"]
+
       section_dict["Package"] = line["Package"]
 
       path_to_debian_dir = recur_search("debian")
@@ -90,13 +95,6 @@ def main():
             with open(join(path_to_debian_dir, "{0}.install".format(pack_name)), 
               "w+") as pack_install:
               pack_install.writelines(re.sub(";\s*", "\n", pack_val["Files"]))
-
-      for el in section_dict["Package"].keys():
-        for dep_sect in dep_sects_list:
-          if section_dict["Package"][el][dep_sect]:
-            packages_processing(section_dict["Package"][el][dep_sect])
-        section_dict["Package"][el]["Depends"] = \
-          get_dependencies(global_req, section_dict["Package"][el]["Depends"])
 
       build_system = line["Buildsystem"]
       build_with = line["BuildWith"]
@@ -114,6 +112,16 @@ def main():
 
       section_dict["Build-Depends"] = get_build_dependencies(global_req,
          section_dict["Build-Depends"])
+
+      section_dict["Build-Depends-Indep"] = get_build_dependencies(global_req,
+         section_dict["Build-Depends-Indep"])
+
+      for el in section_dict["Package"].keys():
+        for dep_sect in dep_sects_list:
+          if section_dict["Package"][el][dep_sect]:
+            packages_processing(section_dict["Package"][el][dep_sect])
+        section_dict["Package"][el]["Depends"] = \
+          get_dependencies(global_req, section_dict["Package"][el]["Depends"])
       
       generate_control()
       generate_rules(build_system, build_with)
@@ -138,11 +146,15 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
 
   # Change "reuirements" style to "control" style signs and update requirements
   build_depends = dict([(base_control[key], {format_sign(el) for el in global_req[key]})
-    for key, val in build_depends.iteritems()
-      if check_in_base(base_control, key) and global_req.has_key(key)])
+    if check_in_base(base_control, key) and global_req.has_key(key) else
+      (key, {format_sign(el) for el in global_req[control_base[key]]})
+      if check_in_base(control_base, key) and global_req.has_key(control_base[key]) else
+        (key, val)
+        if check_in_base(control_base, key) else ("","")
+          for key, val in build_depends.iteritems()])
 
-  build_depends = dict(build_depends.items() + {"python-setuptools" : {}, "python-all" : {},
-    "python-dev" : {}, "debhelper" : {(">=", "9")}}.items())
+  if build_depends.has_key(""):
+    del build_depends[""]
 
   excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
     "python-argparse" : {}, "python-ordereddict" : {},
@@ -175,13 +187,23 @@ def get_dependencies(global_req,
   update = True):
   if not depends:
     depends = dict()
+
+  control_base_file = open("control-base.json", "r")
   base_control_file = open("base-control.json", "r")
+  control_base = json.load(control_base_file)
   base_control = json.load(base_control_file)
   
   # Change "reuirements" style to "control" style signs and update requirements
   depends = dict([(base_control[key], {format_sign(el) for el in global_req[key]})
-    for key, val in depends.iteritems()
-      if check_in_base(base_control, key) and global_req.has_key(key)])
+  if check_in_base(base_control, key) and global_req.has_key(key) else
+    (key, {format_sign(el) for el in global_req[control_base[key]]})
+    if check_in_base(control_base, key) and global_req.has_key(control_base[key]) else
+      (key, val)
+      if check_in_base(control_base, key) else ("","")
+        for key, val in depends.iteritems()])
+
+  if depends.has_key(""):
+    del depends[""]
 
   depends = dict(depends.items() + {"${shlibs:Depends}": {}, "${misc:Depends}": {}}.items())
   try:
@@ -193,6 +215,8 @@ def get_dependencies(global_req,
           if base_control.has_key(req_pack_name) and global_req.has_key(req_pack_name):
             depends.setdefault(base_control[req_pack_name],
               {format_sign(el1) for el1 in global_req[req_pack_name]})
+
+      control_base_file.close()
       base_control_file.close()
   except (IOError, TypeError):
     print "There is no requirements!"
@@ -295,17 +319,16 @@ def parse_packages(line):
   entry_list = [it.start() for it in package_with_version.finditer(line)]
   for pack_idx in entry_list:
     pack = package_with_version.search(line[pack_idx:]).group(0)
-    pack_name = packageName.search(pack)
+    pack_name = packageName.search(pack).group(0)
     pack_eq = packageEq.search(pack)
     pack_ver = packageVers.search(pack)
     # weak place: if (<< 0.5 | >> 0.7) will be != 0.5
     # instead of range != 0.5, != 0.6, != 0.7
     if package_ver_not_equal.search(pack):
       pack_eq = "!="
-    if res.has_key(pack_name):
-      res[pack_name].add((pack_eq, pack_ver))
-    else:
-      res[pack_name] = {(pack_eq, pack_ver)}
+    res.setdefault(pack_name, set())
+    if pack_eq and pack_ver:
+      res[pack_name].add((pack_eq.group(0), pack_ver.group(0)))
   return res
 
 def load_control(control_file_name = "control"):
@@ -340,14 +363,14 @@ def load_control(control_file_name = "control"):
           continue
         if not cur_package:
           for package_sect in main_section_list:
-            if package_sect in line:
+            if "{0}:".format(package_sect) in line:
               cur_sect = package_sect
               break
           if cur_sect not in user_defined_in_main:
             add_to_sect(cur_sect, build_dep_sects_list, section_dict, line)
         else:
           for package_sect in package_section_list:
-            if package_sect in line:
+            if "{0}:".format(package_sect) in line:
               cur_sect = package_sect
               break
           if cur_sect not in user_defined_in_packets[cur_package]:
