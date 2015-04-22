@@ -88,7 +88,9 @@ main()
   fi
 
   if [[ "$(check_in_array 2 ${in_stages[@]})" == "1" ]]; then
-    python builder.py -c "config.yaml" > builder.log
+    echo "${bold}"
+    python builder.py -c "config.yaml" | tee builder.log
+    echo "${normal}"
   fi
 
   if [[ "$(check_in_array 3 ${in_stages[@]})" == "1" ]]; then
