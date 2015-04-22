@@ -3,15 +3,21 @@ Source:
 Section: "python"
 Priority:
 Maintainer:
+XSBC-Original-Maintainer:
+Uploaders:
 Build-Depends: # {"pbr": [{">=", "0.5"}]}
 Build-Depends-Indep:
+Build-Conflicts:
+X-Python-Version:
 Standards-Version:
 Homepage:
+Vcs-Svn:
+Vcs-Browser:
 
 # packages section
 # "Package" is necessary field
 Package:
-  "python-gabbi":
+  "python-eventlet":
     Architecture:
     Section:
     Pre-Depends:

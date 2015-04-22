@@ -28,17 +28,19 @@ package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
 dep_sects_list = ["Depends", "Conflicts", "Provides", "Breaks",
 "Replaces", "Recommends", "Suggests"]
-section_list = ["Source", "Section", "Priority", "Maintainer",
-"Build-Depends", "Build-Depends-Indep", "Standards-Version",
-"Homepage", "Package", "Architecture", "Depends", "Description"]
+def_main_section_list = ["Source", "Section", "Priority", "Maintainer",
+"Standards-Version", "Homepage"]
+def_package_section_list = ["Architecture", "Section", "Description"]
 main_section_list = ["Source", "Section", "Priority", "Maintainer",
 "Build-Depends", "Build-Depends-Indep", "Standards-Version", "Homepage"]
 package_section_list = ["Architecture", "Section", "Depends", "Conflicts",
 "Provides", "Breaks", "Replaces", "Recommends", "Suggests", "Description"]
 section_dict = dict()
+user_defined_in_main = set()
+user_defined_in_packets = dict()
 
 def main():
-  #pdb.set_trace()
+  pdb.set_trace()
   try:
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
@@ -99,6 +101,15 @@ def main():
       build_system = line["Buildsystem"]
       build_with = line["BuildWith"]
 
+      for el in def_main_section_list:
+        if section_dict[el]:
+          user_defined_in_main.add(el)
+      for pack_name, pack_val in section_dict["Package"].iteritems():
+        user_defined_in_packets[pack_name] = set()
+        for el in def_package_section_list:
+          if pack_val[el]:
+            user_defined_in_packets[pack_name].add(el)
+
       load_control()
 
       section_dict["Build-Depends"] = get_build_dependencies(global_req,
@@ -142,6 +153,8 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
     packets_from_py = load_packs(path_to_py, control_base)
     if packets_from_py:
       build_depends = dict(build_depends.items() + packets_from_py.items())
+    else:
+      print "There is no any of .py file with build dependencies!"
 
   for el in excepts:
     if build_depends.has_key(el):
@@ -208,7 +221,7 @@ def load_packs(path, control_base):
         if filtered_package:
           res_grep.setdefault(filtered_package, {})
       return res_grep
-  except IOError:
+  except (IOError, TypeError):
     return None
 
 def recur_search(names, relative_path = ".", search_type = "default", control_base = None):
@@ -277,54 +290,70 @@ def part_of_package(package, packages):
       return el
   return None
 
-def parse_packages(line, dep_flag, cur_package):
-  for package_sect in package_section_list:
-    if package_sect in line and package_sect != dep_flag:
-      dep_flag = package_sect
-      if package_sect in dep_sects_list:
-        dep_flag = parse_packages(line, dep_flag, cur_package)
-      else:
-        section_dict["Package"][cur_package][dep_flag] = \
-          re.sub(":\s+", "", sectTemplate.search(line).group(0))
-      return dep_flag
-  if dep_flag in dep_sects_list:
-    entry_list = [it.start() for it in package_with_version.finditer(line)]
-    for pack_idx in entry_list:
-      pack = package_with_version.search(line[pack_idx:]).group(0)
-      pack_name = packageName.search(pack)
-      pack_eq = packageEq.search(pack)
-      pack_ver = packageVers.search(pack)
-      # weak place: if (<< 0.5 | >> 0.7) will be != 0.5
-      # instead of range != 0.5, != 0.6, != 0.7
-      if package_ver_not_equal.search(pack):
-        pack_eq = "!="
-      if section_dict["Package"][cur_package][dep_flag].has_key(pack_name):
-        section_dict["Package"][cur_package][dep_flag][pack_name]. \
-          add((pack_eq, pack_ver))
-      else:
-        section_dict["Package"][cur_package][dep_flag][pack_name] = \
-          {(pack_eq, pack_ver)}
-  elif dep_flag != "":
-    section_dict["Package"][cur_package][dep_flag] += "\n{0}".format(line)
-  return dep_flag
+def parse_packages(line):
+  res = dict()
+  entry_list = [it.start() for it in package_with_version.finditer(line)]
+  for pack_idx in entry_list:
+    pack = package_with_version.search(line[pack_idx:]).group(0)
+    pack_name = packageName.search(pack)
+    pack_eq = packageEq.search(pack)
+    pack_ver = packageVers.search(pack)
+    # weak place: if (<< 0.5 | >> 0.7) will be != 0.5
+    # instead of range != 0.5, != 0.6, != 0.7
+    if package_ver_not_equal.search(pack):
+      pack_eq = "!="
+    if res.has_key(pack_name):
+      res[pack_name].add((pack_eq, pack_ver))
+    else:
+      res[pack_name] = {(pack_eq, pack_ver)}
+  return res
 
 def load_control(control_file_name = "control"):
+
+  def add_to_sect(cur_sect, dep_sects_list, section_in_dict, line):
+    if cur_sect in dep_sects_list:
+      packs_in_line = parse_packages(line)
+      if not section_in_dict[cur_sect]:
+        section_in_dict[cur_sect] = dict()
+      for pack_name, pack_val in packs_in_line.iteritems():
+        section_in_dict[cur_sect].setdefault(pack_name, pack_val)
+        section_in_dict[cur_sect][pack_name] |= pack_val
+    else:
+        sect_templ_line = sectTemplate.search(line)
+        new_line = ""
+        if sect_templ_line:
+          new_line = re.sub(":\s+", "", sect_templ_line.group(0))
+        elif line.startswith(" "):
+          new_line = line
+        section_in_dict[cur_sect] = (section_in_dict[cur_sect] +
+          "\n{0}".format(new_line.rstrip()) if section_in_dict[cur_sect] else new_line)
+
   try:
     with open(recur_search(control_file_name), 'r') as control_file:
-      cur_package = dep_flag = ""
+      cur_package = cur_sect = ""
       for line in control_file:
-        if not cur_package:
-          for main_sect in main_section_list:
-            if main_sect in line and not section_dict[main_sect] and \
-              main_sect not in build_dep_sects_list:
-              section_dict[main_sect] = re.sub(":\s+", "",
-                sectTemplate.search(line).group(0))
-        else:
-          dep_flag = parse_packages(line, dep_flag, cur_package)
+        if line.startswith("#"):
+          continue
         if "Package:" in line:
           cur_package = re.sub(":\s+", "",
             sectTemplate.search(line).group(0))
-  except IOError:
+          continue
+        if not cur_package:
+          for package_sect in main_section_list:
+            if package_sect in line:
+              cur_sect = package_sect
+              break
+          if cur_sect not in user_defined_in_main:
+            add_to_sect(cur_sect, build_dep_sects_list, section_dict, line)
+        else:
+          for package_sect in package_section_list:
+            if package_sect in line:
+              cur_sect = package_sect
+              break
+          if cur_sect not in user_defined_in_packets[cur_package]:
+            add_to_sect(cur_sect, dep_sects_list,
+              section_dict["Package"][cur_package], line)
+  except (IOError, TypeError):
     print "There is no control file!"
 
 
@@ -385,7 +414,7 @@ def generate_rules(build_system, build_with, rules_file_name = "rules"):
     with open(recur_search(rules_file_name), "w+") as rules_file:
       rules_file.writelines(content)
 
-  except IOError:
+  except (IOError, TypeError):
     print "Error while overwriting rules file!"
 
 main()
