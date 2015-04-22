@@ -39,5 +39,5 @@ Branch: master
 # rules section
 # pybuild, python_distutils
 Buildsystem: python_distutils
-# python2, python3
+# python2, python3, sphinxdoc
 BuildWith: python2
