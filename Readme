@@ -1,2 +1,0 @@
-1. Put .tar.gz to "package" directory and configure config.yaml
-2. Run "build.sh -e your@email.com"

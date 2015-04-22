@@ -23,7 +23,20 @@ Package:
     Recommends:
     Suggests:
     Description:
-    Files:
+    Files: "usr/bin;usr/lib"
+  "python-gabbi-common":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: "usr/share/doc"
 
 # Credentials section
 Login: ""

@@ -34,6 +34,8 @@ In the config.yaml file you can see fields with names same as in control file. P
 - Branch
     This property is needed for update package versions with global list of requirements. You can chose in [master, juno, icehouse].
 
+An example of config.yaml you can find in the directory.
+
 Stages of building
 ^^^^^^^^^^^^^^^^^^
 0. Hidden stage is for prepare all files to make and build also for getting names of necessary files and folders
