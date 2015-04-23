@@ -29,7 +29,8 @@ build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
 dep_sects_list = ["Depends", "Conflicts", "Provides", "Breaks",
 "Replaces", "Recommends", "Suggests"]
 def_main_section_list = ["Source", "Section", "Priority", "Maintainer",
-"Standards-Version", "Homepage"]
+"XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "Standards-Version",
+"Homepage", "Vcs-Svn", "Vcs-Browser"]
 def_package_section_list = ["Architecture", "Section", "Description"]
 main_section_list = ["Source", "Section", "Priority", "Maintainer",
 "Build-Depends", "Build-Depends-Indep", "Standards-Version", "Homepage"]
