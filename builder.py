@@ -186,7 +186,7 @@ def main():
                 base_control, control_base)
 
         section_dict["Package"][pack_name]["Depends"] = \
-          get_dependencies(section_dict["Package"][pack_name]["Depends"], global_req)
+          get_dependencies(section_dict["Package"][pack_name]["Depends"], global_req, base_control)
 
       load_control()
 
@@ -267,6 +267,7 @@ def get_build_dependencies(build_depends, global_req, control_base, py_file_name
 
 def get_dependencies(depends,
   global_req,
+  base_control,
   req_file_names = ["requires.txt", "requirements.txt"],
   update = True):
   if not depends:
