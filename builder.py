@@ -162,8 +162,8 @@ def main():
       section_dict["OnlyIf-Build-Conflicts"] = normalize(section_dict["OnlyIf-Build-Conflicts"],
         base_control, control_base)
 
-      section_dict["Build-Depends"] = get_build_dependencies(section_dict["Build-Depends"],
-        normalized_global_req, control_base)
+      #section_dict["Build-Depends"] = get_build_dependencies(section_dict["Build-Depends"],
+      #  normalized_global_req, control_base)
       section_dict["Build-Depends-Indep"] = get_build_dependencies(section_dict["Build-Depends-Indep"],
         normalized_global_req, control_base)
 
