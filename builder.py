@@ -22,7 +22,7 @@ sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
   re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|=|>=|<=)+\s*(\d[.]*[a-z+-]*)+\s*)" \
-    "(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*[a-z+-]*)+\s*){,1}\)){,1}")
+    "(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*[a-z+-]*)+\s*){,1}\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
@@ -46,6 +46,11 @@ def main():
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
 
+    control_base_file = open("control-base.json", "r")
+    base_control_file = open("base-control.json", "r")
+    control_base = json.load(control_base_file)
+    base_control = json.load(base_control_file)
+
     for line in tempConf:
       depends = dict()
       build_depends = dict()
@@ -66,6 +71,9 @@ def main():
       '{0}/global-requirements.txt'.format(global_branch)
       global_req = require_utils.Require.parse_req(
         lan.get_requirements_from_url(req_url, gerritAccount))
+      normalized_global_req = normalize(global_req, base_control, control_base)
+
+      section_dict["Update"] = line["Update"]
 
       section_dict["Source"] = line["Source"]
       section_dict["Section"] = line["Section"]
@@ -73,15 +81,46 @@ def main():
       section_dict["Maintainer"] = line["Maintainer"]
       section_dict["XSBC-Original-Maintainer"] = line["XSBC-Original-Maintainer"]
       section_dict["Uploaders"] = line["Uploaders"]
+
+      def process_witout_onlyif(section):
+        new_section = dict((pack_name, pack_val) for pack_name, pack_val in
+          section.iteritems() if pack_name != "OnlyIf")
+        if new_section:
+          packages_processing(new_section)
+        return new_section
+
+      section_dict["OnlyIf-Build-Depends"] = section_dict["OnlyIf-Build-Depends-Indep"] = \
+        section_dict["OnlyIf-Build-Conflicts"] = dict()
+
+      #-------------------------------------------------------------#
+
       section_dict["Build-Depends"] = line["Build-Depends"]
-      if section_dict["Build-Depends"]:
-        packages_processing(section_dict["Build-Depends"])
+      if line["Build-Depends"]:
+        section_dict["Build-Depends"] = process_witout_onlyif(section_dict["Build-Depends"])
+        if line["Build-Depends"].has_key("OnlyIf"):
+          section_dict["OnlyIf-Build-Depends"] = line["Build-Depends"]["OnlyIf"]
+          packages_processing(section_dict["OnlyIf-Build-Depends"])
+
+      #-------------------------------------------------------------#
 
       section_dict["Build-Depends-Indep"] = line["Build-Depends-Indep"]
       if section_dict["Build-Depends-Indep"]:
-        packages_processing(section_dict["Build-Depends-Indep"])
+        section_dict["Build-Depends-Indep"] = process_witout_onlyif(section_dict["Build-Depends-Indep"])
+        if line["Build-Depends-Indep"].has_key("OnlyIf"):
+          section_dict["OnlyIf-Build-Depends-Indep"] = line["Build-Depends-Indep"]["OnlyIf"]
+          packages_processing(section_dict["OnlyIf-Build-Depends-Indep"])
 
+      #-------------------------------------------------------------#
+      
       section_dict["Build-Conflicts"] = line["Build-Conflicts"]
+      if section_dict["Build-Conflicts"]:
+        section_dict["Build-Conflicts"] = process_witout_onlyif(section_dict["Build-Conflicts"])
+        if line["Build-Conflicts"].has_key("OnlyIf"):
+          section_dict["OnlyIf-Build-Conflicts"] = line["Build-Conflicts"]["OnlyIf"]
+          packages_processing(section_dict["OnlyIf-Build-Conflicts"])
+      
+      #-------------------------------------------------------------#
+
       section_dict["X-Python-Version"] = line["X-Python-Version"]
       section_dict["Standards-Version"] = line["Standards-Version"]
       section_dict["Homepage"] = line["Homepage"]
@@ -110,60 +149,108 @@ def main():
           if pack_val[el]:
             user_defined_in_packets[pack_name].add(el)
 
+      section_dict["Build-Depends"] = normalize(section_dict["Build-Depends"],
+        base_control, control_base)
+      section_dict["Build-Depends-Indep"] = normalize(section_dict["Build-Depends-Indep"],
+        base_control, control_base)
+      section_dict["OnlyIf-Build-Depends"] = normalize(section_dict["OnlyIf-Build-Depends"],
+        base_control, control_base)
+      section_dict["OnlyIf-Build-Depends-Indep"] = normalize(section_dict["OnlyIf-Build-Depends-Indep"],
+        base_control, control_base)
+      section_dict["OnlyIf-Build-Conflicts"] = normalize(section_dict["OnlyIf-Build-Conflicts"],
+        base_control, control_base)
+
+      section_dict["Build-Depends"] = get_build_dependencies(section_dict["Build-Depends"],
+        normalized_global_req, control_base)
+      section_dict["Build-Depends-Indep"] = get_build_dependencies(section_dict["Build-Depends-Indep"],
+        normalized_global_req, control_base)
+
+      for pack_name in section_dict["Package"].keys():
+        for dep_sect in dep_sects_list:
+          if section_dict["Package"][pack_name][dep_sect]:
+            section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = dict()
+            if section_dict["Package"][pack_name][dep_sect].has_key("OnlyIf"):
+              section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = \
+                section_dict["Package"][pack_name][dep_sect]["OnlyIf"]
+              packages_processing(section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)])
+            section_dict["Package"][pack_name][dep_sect] = \
+              process_witout_onlyif(section_dict["Package"][pack_name][dep_sect])
+
+            section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = \
+              normalize(section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)],
+                base_control, control_base)
+            section_dict["Package"][pack_name][dep_sect] = \
+              normalize(section_dict["Package"][pack_name][dep_sect],
+                base_control, control_base)
+
+        section_dict["Package"][pack_name]["Depends"] = \
+          get_dependencies(section_dict["Package"][pack_name]["Depends"], global_req)
+
       load_control()
 
-      section_dict["Build-Depends"] = get_build_dependencies(global_req,
-         section_dict["Build-Depends"])
+      section_dict["Build-Depends"] = update_depends(section_dict["Build-Depends"],
+        normalized_global_req, section_dict["OnlyIf-Build-Depends"].keys())
+      section_dict["Build-Depends-Indep"] = update_depends(section_dict["Build-Depends-Indep"],
+        normalized_global_req, section_dict["OnlyIf-Build-Depends-Indep"].keys())
 
-      section_dict["Build-Depends-Indep"] = get_build_dependencies(global_req,
-         section_dict["Build-Depends-Indep"])
+      synchronize_with_onlyif(section_dict, "Build-Depends")
+      synchronize_with_onlyif(section_dict, "Build-Depends-Indep")
+      synchronize_with_onlyif(section_dict, "Build-Conflicts")
 
-      for el in section_dict["Package"].keys():
+      for pack_name in section_dict["Package"].keys():
         for dep_sect in dep_sects_list:
-          if section_dict["Package"][el][dep_sect]:
-            packages_processing(section_dict["Package"][el][dep_sect])
-        section_dict["Package"][el]["Depends"] = \
-          get_dependencies(global_req, section_dict["Package"][el]["Depends"])
-      
+          if section_dict["Package"][pack_name][dep_sect]:
+            synchronize_with_onlyif(section_dict["Package"][pack_name], dep_sect)
+            section_dict["Package"][pack_name][dep_sect] = \
+              update_depends(section_dict["Package"][pack_name][dep_sect], normalized_global_req,
+                section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)])
+
       generate_control()
       generate_rules(build_system, build_with)
+
+    control_base_file.close()
+    base_control_file.close()
     conf.close()
 
   except KeyboardInterrupt:
     print '\nThe process was interrupted by the user'
     raise SystemExit
 
-def packages_processing(section):
-  for el in section.keys():
-    section[el] = {(el1.items()[0]) for el1 in section[el]}
+def synchronize_with_onlyif(section_in_dict, name):
+  for pack_name, pack_val in section_in_dict["OnlyIf-{0}".format(name)].iteritems():
+    if section_in_dict[name].has_key(pack_name):
+      section_in_dict[name][pack_name] = pack_val
 
-def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py"], update = True):
-  if not build_depends:
-    build_depends = dict()
+def packages_processing(section_in_dict):
+  for el in section_in_dict.keys():
+    section_in_dict[el] = {(el1.items()[0]) for el1 in section_in_dict[el]}
 
-  control_base_file = open("control-base.json", "r")
-  base_control_file = open("base-control.json", "r")
-  control_base = json.load(control_base_file)
-  base_control = json.load(base_control_file)
+def normalize(depends, base_control, control_base):
+  if not depends:
+    depends = dict()
+  new_depends = dict([(base_control[pack_name], {format_sign(el) for el in pack_val})
+    if check_in_base(base_control, pack_name) else
+      (pack_name, {format_sign(el) for el in pack_val})
+      if check_in_base(control_base, pack_name) else ("", "")
+        for pack_name, pack_val in depends.iteritems()])
+  if new_depends.has_key(""):
+    del new_depends[""]
+  return new_depends
 
-  # Change "reuirements" style to "control" style signs and update requirements
-  build_depends = dict([(base_control[key], {format_sign(el) for el in global_req[key]})
-    if check_in_base(base_control, key) and global_req.has_key(key) else
-      (key, {format_sign(el) for el in global_req[control_base[key]]})
-      if check_in_base(control_base, key) and global_req.has_key(control_base[key]) else
-        (key, val)
-        if check_in_base(control_base, key) else ("","")
-          for key, val in build_depends.iteritems()])
+# Change "reuirements" style to "control" style signs and update requirements
+def update_depends(depends, global_req, not_update):
+  new_depends = dict([(pack_name, global_req[pack_name])
+    if global_req.has_key(pack_name) and  pack_name not in not_update else (pack_name, pack_val)
+      for pack_name, pack_val in depends.iteritems()])
+  return new_depends
 
-  if build_depends.has_key(""):
-    del build_depends[""]
-
+def get_build_dependencies(build_depends, global_req, control_base, py_file_names = ["setup.py"]):
   excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
     "python-argparse" : {}, "python-ordereddict" : {},
     "python-multiprocessing": {}, "python-os": {}, section_dict["Source"]: {}}
 
   for py_file in py_file_names:
-    path_to_py = recur_search(names = py_file, control_base = control_base)
+    path_to_py = recur_search(names = py_file)
     packets_from_py = load_packs(path_to_py, control_base)
     if packets_from_py:
       build_depends = dict(build_depends.items() + packets_from_py.items())
@@ -174,38 +261,14 @@ def get_build_dependencies(global_req, build_depends, py_file_names = ["setup.py
     if build_depends.has_key(el):
       del build_depends[el]
 
-  for el in build_depends.keys():
-    if control_base.has_key(el) and global_req.has_key(control_base[el]):
-      build_depends[el] = global_req[control_base[el]]
-
-  control_base_file.close()
-  base_control_file.close()
-
   return build_depends
 
-def get_dependencies(global_req,
-  depends,
+def get_dependencies(depends,
+  global_req,
   req_file_names = ["requires.txt", "requirements.txt"],
   update = True):
   if not depends:
     depends = dict()
-
-  control_base_file = open("control-base.json", "r")
-  base_control_file = open("base-control.json", "r")
-  control_base = json.load(control_base_file)
-  base_control = json.load(base_control_file)
-  
-  # Change "reuirements" style to "control" style signs and update requirements
-  depends = dict([(base_control[key], {format_sign(el) for el in global_req[key]})
-  if check_in_base(base_control, key) and global_req.has_key(key) else
-    (key, {format_sign(el) for el in global_req[control_base[key]]})
-    if check_in_base(control_base, key) and global_req.has_key(control_base[key]) else
-      (key, val)
-      if check_in_base(control_base, key) else ("","")
-        for key, val in depends.iteritems()])
-
-  if depends.has_key(""):
-    del depends[""]
 
   depends = dict(depends.items() + {"${shlibs:Depends}": {}, "${misc:Depends}": {}}.items())
   try:
@@ -218,8 +281,6 @@ def get_dependencies(global_req,
             depends.setdefault(base_control[req_pack_name],
               {format_sign(el1) for el1 in global_req[req_pack_name]})
 
-      control_base_file.close()
-      base_control_file.close()
   except (IOError, TypeError):
     print "There is no requirements!"
   return depends
@@ -250,12 +311,12 @@ def load_packs(path, control_base):
   except (IOError, TypeError):
     return None
 
-def recur_search(names, relative_path = ".", search_type = "default", control_base = None):
+def recur_search(names, relative_path = ".", search_type = "default"):
   for el in listdir(relative_path):
     if el in names:
       return join(relative_path, el)
     elif isdir(join(relative_path, el)) and el not in ["doc"]:
-      path = recur_search(names, join(relative_path, el), control_base)
+      path = recur_search(names, join(relative_path, el))
       if path:
         return path
   return None
@@ -341,8 +402,12 @@ def load_control(control_file_name = "control"):
       if not section_in_dict[cur_sect]:
         section_in_dict[cur_sect] = dict()
       for pack_name, pack_val in packs_in_line.iteritems():
-        section_in_dict[cur_sect].setdefault(pack_name, pack_val)
-        section_in_dict[cur_sect][pack_name] |= pack_val
+        if pack_name not in section_in_dict["OnlyIf-{0}".format(cur_sect)].keys():
+          section_in_dict[cur_sect].setdefault(pack_name, pack_val)
+          section_in_dict[cur_sect][pack_name] |= pack_val
+        #else:
+        #  section_in_dict[cur_sect][pack_name] = \
+        #    section_in_dict["OnlyIf-{0}".format(cur_sect)][pack_name]
     else:
         sect_templ_line = sectTemplate.search(line)
         new_line = ""

@@ -5,7 +5,9 @@ Priority:
 Maintainer:
 XSBC-Original-Maintainer:
 Uploaders:
-Build-Depends: # {"pbr": [{">=", "0.5"}]}
+Build-Depends:
+  "pbr": []
+  OnlyIf: {"pbr": [{">=": "0.10"}]}
 Build-Depends-Indep:
 Build-Conflicts:
 X-Python-Version:
@@ -17,11 +19,13 @@ Vcs-Browser:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-eventlet":
+  "python-migrate":
     Architecture:
     Section:
     Pre-Depends:
     Depends:
+      "pbr": []
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
     Conflicts:
     Provides:
     Breaks:
@@ -30,6 +34,10 @@ Package:
     Suggests:
     Description:
     Files:
+
+# If "True" then nothing will be update
+# according global requirements
+Update: False
 
 # Credentials section
 Login: ""
