@@ -2,11 +2,11 @@
 Source:
 Section: "python"
 Priority:
-Maintainer:
+Maintainer: "Mirantis OpenStack Team <mos@mirantis.com>"
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:
-  OnlyIf: {"pbr": [{">=": "0.10"}]}
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
 Build-Depends-Indep:
 Build-Conflicts:
 X-Python-Version:
@@ -53,10 +53,10 @@ Update: False
 # Credentials section
 Login: ""
 Password: ""
-Branch: master
+Branch: kilo
 
 # rules section
 # pybuild, python_distutils
-Buildsystem: python_distutils
+Buildsystem: 
 # python2, python3, sphinxdoc
-BuildWith: python2
+BuildWith: 

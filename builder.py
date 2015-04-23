@@ -13,16 +13,16 @@ parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
 args = parser.parse_args()
 
 packageName = re.compile("(\d*[a-zA-Z-_.]\d*)+")
-packageEq = re.compile("(>=|<=|>>|<<|=|!=)+")
-packageVers = re.compile("(\d[.]*[a-z+-]*)+")
+packageEq = re.compile("(>=|<=|>>|<<|==|!=)+")
+packageVers = re.compile("(\d[.]*[a-z+-~]*)+")
 packageNameEnd = re.compile("[a-zA-Z0-9-_.]+$")
 impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
-  re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|=|>=|<=)+\s*(\d[.]*[a-z+-]*)+\s*)" \
-    "(\|{1}\s*(>>|<<|=|>=|<=)+\s*(\d[.]*[a-z+-]*)+\s*){,1}\)){,1},")
+  re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~]*)+\s*)" \
+    "(\|{1}\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~]*)+\s*){,1}\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
@@ -65,6 +65,8 @@ def main():
         global_branch = 'stable/juno'
       elif global_branch == 'icehouse':
         global_branch = 'stable/icehouse'
+      elif global_branch == 'kilo':
+        global_branch = 'stable/kilo'
       gerritAccount = lan.login_to_launchpad(launchpad_id, launchpad_pw)
 
       req_url = 'https://raw.githubusercontent.com/openstack/requirements/' \
