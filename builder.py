@@ -167,8 +167,8 @@ def main():
 
       for pack_name in section_dict["Package"].keys():
         for dep_sect in dep_sects_list:
+          section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = dict()
           if section_dict["Package"][pack_name][dep_sect]:
-            section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = dict()
             if section_dict["Package"][pack_name][dep_sect].has_key("OnlyIf"):
               section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = \
                 section_dict["Package"][pack_name][dep_sect]["OnlyIf"]

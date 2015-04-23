@@ -18,12 +18,11 @@ Vcs-Browser:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-migrate":
+  "python-oslotest":
     Architecture:
     Section:
     Pre-Depends:
     Depends:
-      "pbr": []
       OnlyIf: {"pbr": [{">=": "0.10"}]}
     Conflicts:
     Provides:
@@ -32,7 +31,20 @@ Package:
     Recommends:
     Suggests:
     Description:
-    Files:
+    Files: ""
+  "python-oslotest-doc":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
 
 # If "True" then nothing will be update
 # according global requirements
