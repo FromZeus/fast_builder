@@ -47,8 +47,8 @@ main()
   tarName=$(find . -regex ".*/.*[^\(orig\|debian\)].tar.gz")
 
   if [[ "${tarName}" == "" ]]; then
-    echo "There is no .tar.gz!"
-    #exit 1
+    echo "There is no .tar.gz! You can't execute 1 and 3 stages."
+    in_stages=( ${in_stages[@]/[13]/} )
   fi
 
   tarName=${tarName#./}

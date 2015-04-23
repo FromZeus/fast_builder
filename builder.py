@@ -72,6 +72,7 @@ def main():
       section_dict["Priority"] = line["Priority"]
       section_dict["Maintainer"] = line["Maintainer"]
       section_dict["XSBC-Original-Maintainer"] = line["XSBC-Original-Maintainer"]
+      section_dict["Uploaders"] = line["Uploaders"]
       section_dict["Build-Depends"] = line["Build-Depends"]
       if section_dict["Build-Depends"]:
         packages_processing(section_dict["Build-Depends"])

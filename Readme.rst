@@ -10,7 +10,7 @@ This utility is designed for building .deb packages.
 How to use
 ----------
 
-* Put .tar.gz archive of your packet into "package" dirrectory
+* Put .tar.gz archive or "debian" folder of your packet into "package" dirrectory
 
 * `Configure config.yaml`_
 
@@ -40,5 +40,5 @@ Stages of building
 ^^^^^^^^^^^^^^^^^^
 0. Hidden stage is for prepare all files to make and build also for getting names of necessary files and folders. Executed by default.
 1. First stage - make with dh_make command.
-2. Second stage - run "builder.py -c config.yaml". In this stage python script do all necessary things with control and rules files.
+2. Second stage - run "builder.py -c config.yaml". In this stage python script do all necessary things with control and rules files. You can execute this stage, for example, if only "debian" folder in the "package" directory.
 3. Third stage runs "DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -rfakeroot -us -uc" and cleanup directory.
