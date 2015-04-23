@@ -38,7 +38,7 @@ An example of config.yaml you can find in the directory.
 
 Stages of building
 ^^^^^^^^^^^^^^^^^^
-0. Hidden stage is for prepare all files to make and build also for getting names of necessary files and folders
-1. First stage - make with dh_make command
-2. Second stage - run "builder.py -c config.yaml". In this stage python script do all necessary things with control and rules files
-3. Third stage runs "DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -rfakeroot -us -uc" and cleanup directory
+0. Hidden stage is for prepare all files to make and build also for getting names of necessary files and folders. Executed by default.
+1. First stage - make with dh_make command.
+2. Second stage - run "builder.py -c config.yaml". In this stage python script do all necessary things with control and rules files.
+3. Third stage runs "DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -rfakeroot -us -uc" and cleanup directory.
