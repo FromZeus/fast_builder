@@ -402,9 +402,9 @@ def load_control(control_file_name = "control"):
       if not section_in_dict[cur_sect]:
         section_in_dict[cur_sect] = dict()
       for pack_name, pack_val in packs_in_line.iteritems():
-        if pack_name not in section_in_dict["OnlyIf-{0}".format(cur_sect)].keys():
-          section_in_dict[cur_sect].setdefault(pack_name, pack_val)
-          section_in_dict[cur_sect][pack_name] |= pack_val
+        #if pack_name not in section_in_dict["OnlyIf-{0}".format(cur_sect)].keys():
+        section_in_dict[cur_sect].setdefault(pack_name, pack_val)
+        section_in_dict[cur_sect][pack_name] |= pack_val
         #else:
         #  section_in_dict[cur_sect][pack_name] = \
         #    section_in_dict["OnlyIf-{0}".format(cur_sect)][pack_name]

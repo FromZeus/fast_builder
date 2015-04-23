@@ -6,7 +6,6 @@ Maintainer:
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:
-  "pbr": []
   OnlyIf: {"pbr": [{">=": "0.10"}]}
 Build-Depends-Indep:
 Build-Conflicts:
