@@ -34,11 +34,12 @@ In the config.yaml file you can see fields with names same as in control file. P
 - Branch
     This property is needed for update package versions with global list of requirements. You can chose in [master, juno, icehouse].
 
+Every field with packages could have "OnlyIf" subfield, which applied only if such packet could be found in the list of field.
 An example of config.yaml you can find in the directory.
 
 Stages of building
 ^^^^^^^^^^^^^^^^^^
 0. Hidden stage is for prepare all files to make and build also for getting names of necessary files and folders. Executed by default.
 1. First stage - make with dh_make command.
-2. Second stage - run "builder.py -c config.yaml". In this stage python script do all necessary things with control and rules files. You can execute this stage, for example, if only "debian" folder in the "package" directory.
+2. Second stage - run "builder.py -c config.yaml". In this stage python script do all necessary things with control and rules files. You can execute this stage, for example, if only "debian" folder in the "package" directory. **Note, that every single package have to be ended with "," otherwise it would not be parsed!**
 3. Third stage runs "DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -rfakeroot -us -uc" and cleanup directory.

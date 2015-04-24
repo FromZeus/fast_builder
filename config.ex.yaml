@@ -2,16 +2,37 @@
 Source:
 Section: "python"
 Priority:
-Maintainer:
-Build-Depends: # {"pbr": [{">=", "0.5"}]}
+Maintainer: 
+XSBC-Original-Maintainer:
+Uploaders:
+Build-Depends:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
 Build-Depends-Indep:
+Build-Conflicts:
+X-Python-Version:
 Standards-Version:
 Homepage:
+Vcs-Svn:
+Vcs-Browser:
 
 # packages section
 # "Package" is necessary field
 Package:
-  "python-gabbi":
+  "python-oslotest":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+  "python-oslotest-doc":
     Architecture:
     Section:
     Pre-Depends:
@@ -23,28 +44,19 @@ Package:
     Recommends:
     Suggests:
     Description:
-    Files: "usr/bin;usr/lib"
-  "python-gabbi-common":
-    Architecture:
-    Section:
-    Pre-Depends:
-    Depends:
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
-    Files: "usr/share/doc"
+    Files: ""
+
+# If "True" then nothing will be update
+# according global requirements
+Update: False
 
 # Credentials section
 Login: ""
 Password: ""
-Branch: master
+Branch: kilo
 
 # rules section
 # pybuild, python_distutils
-Buildsystem: python_distutils
-# python2, python3
-BuildWith: python2
+Buildsystem: 
+# python2, python3, sphinxdoc
+BuildWith: 
