@@ -198,5 +198,16 @@
     "wsgiref":"python-wsgiref",
     "xattr":"python-xattr",
     "xvfbwrapper":"xvfbwrapper",
-    "zake":"python-zake"
+    "zake":"python-zake",
+    "sqlparse":"python-sqlparse",
+    "psycopg2":"python-psycopg2",
+    "mysql-server":"mysql-server",
+    "tempita":"python-tempita",
+    "scripttest":"python-scripttest",
+    "mysql-client":"mysql-client",
+    "python":"python",
+    "openstack-pkg-tools":"openstack-pkg-tools",
+    "subunit":"subunit",
+    "pkg-resources":"python-pkg-resources",
+    "libjs-sphinxdoc":"libjs-sphinxdoc"
 }

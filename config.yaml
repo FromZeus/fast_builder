@@ -2,7 +2,7 @@
 Source:
 Section: "python"
 Priority:
-Maintainer: "MOS Oslo team <mos-oslo@mirantis.com>"
+Maintainer: "MOS Nova Team <mos-nova@mirantis.com>"
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:
@@ -19,25 +19,12 @@ Vcs-Browser:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-oslo.log":
+  "python-migrate":
     Architecture:
     Section:
     Pre-Depends:
     Depends:
       OnlyIf: {"pbr": [{">=": "0.10"}]}
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
-    Files: ""
-  "python-oslo.log-doc":
-    Architecture:
-    Section:
-    Pre-Depends:
-    Depends:
     Conflicts:
     Provides:
     Breaks:

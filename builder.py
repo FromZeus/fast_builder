@@ -261,11 +261,17 @@ def normalize(depends, base_control, control_base, control_internal):
       (pack_name, {format_sign(el) for el in pack_val})
       if check_in_base(control_base, pack_name) or pack_name in base_depends.keys() else
         (control_internal[pack_name], {format_sign(el) for el in pack_val})
-        if check_in_base(control_internal, pack_name) else ("", "")
+        if check_in_base(control_internal, pack_name) else (pack_name, "unknown")
           for pack_name, pack_val in depends.iteritems()])
-  if new_depends.has_key(""):
-    del new_depends[""]
-  return new_depends
+
+  _new_depends = dict()
+  for pack_name, pack_val in new_depends.iteritems():
+    if pack_val == "unknown":
+      print "Unknown package: {0}".format(pack_name)
+    else:
+      _new_depends[pack_name] = pack_val
+
+  return _new_depends
 
 # Change "reuirements" style to "control" style signs and update requirements
 def update_depends(depends, global_req, not_update):

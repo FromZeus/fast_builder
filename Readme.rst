@@ -32,7 +32,7 @@ In the config.yaml file you can see fields with names same as in control file. P
 - Password
     Your launchpad password.
 - Branch
-    This property is needed for update package versions with global list of requirements. You can chose in [master, juno, icehouse].
+    This property is needed for update package versions with global list of requirements. You can chose in [master, juno, icehouse, kilo].
 - DelBounds
     List of bounds which will be removed. You can use: ["<<", ">>", "<=", ">=", "==", "!="].
 

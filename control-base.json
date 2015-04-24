@@ -198,5 +198,16 @@
     "unittest2":"unittest2",
     "websockify":"websockify",
     "wheel":"wheel",
-    "xvfbwrapper":"xvfbwrapper"
+    "xvfbwrapper":"xvfbwrapper",
+    "python-sqlparse":"sqlparse",
+    "python-psycopg2":"psycopg2",
+    "mysql-server":"mysql-server",
+    "python-tempita":"tempita",
+    "python-scripttest":"scripttest",
+    "mysql-client":"mysql-client",
+    "python":"python",
+    "openstack-pkg-tools":"openstack-pkg-tools",
+    "subunit":"subunit",
+    "python-pkg-resources":"pkg-resources",
+    "libjs-sphinxdoc":"libjs-sphinxdoc"
 }
