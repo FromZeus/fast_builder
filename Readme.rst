@@ -33,6 +33,8 @@ In the config.yaml file you can see fields with names same as in control file. P
     Your launchpad password.
 - Branch
     This property is needed for update package versions with global list of requirements. You can chose in [master, juno, icehouse].
+- DelBounds
+    List of bounds which will be removed. You can use: ["<<", ">>", "<=", ">=", "==", "!="].
 
 Every field with packages could have "OnlyIf" subfield, which applied only if such packet could be found in the list of field.
 An example of config.yaml you can find in the directory.
