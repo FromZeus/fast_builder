@@ -21,7 +21,7 @@ fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
-  re.compile("(\d*[a-zA-Z0-9-_.]\d*)+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)" \
+  re.compile("[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)" \
     "(\|{1}\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*){,1}\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
