@@ -26,6 +26,9 @@ package_with_version = \
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
 base_depends = {"${shlibs:Depends}": {}, "${misc:Depends}": {}}
+build_excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
+  "python-argparse" : {}, "python-ordereddict" : {},
+  "python-multiprocessing": {}, "python-os": {}}
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
 dep_sects_list = ["Pre-Depends", "Depends", "Conflicts", "Provides", "Breaks",
@@ -95,6 +98,8 @@ def main():
           packages_processing(new_section)
         return new_section
 
+      build_excepts[section_dict["Source"]] = {}
+
       section_dict["OnlyIf-Build-Depends"] = section_dict["OnlyIf-Build-Depends-Indep"] = \
         section_dict["OnlyIf-Build-Conflicts"] = dict()
 
@@ -155,17 +160,6 @@ def main():
           if pack_val[el]:
             user_defined_in_packets[pack_name].add(el)
 
-      section_dict["Build-Depends"] = normalize(section_dict["Build-Depends"],
-        base_control, control_base, control_internal)
-      section_dict["Build-Depends-Indep"] = normalize(section_dict["Build-Depends-Indep"],
-        base_control, control_base, control_internal)
-      section_dict["OnlyIf-Build-Depends"] = normalize(section_dict["OnlyIf-Build-Depends"],
-        base_control, control_base, control_internal)
-      section_dict["OnlyIf-Build-Depends-Indep"] = normalize(section_dict["OnlyIf-Build-Depends-Indep"],
-        base_control, control_base, control_internal)
-      section_dict["OnlyIf-Build-Conflicts"] = normalize(section_dict["OnlyIf-Build-Conflicts"],
-        base_control, control_base, control_internal)
-
       #section_dict["Build-Depends"] = get_build_dependencies(section_dict["Build-Depends"],
       #  normalized_global_req, control_base)
       section_dict["Build-Depends-Indep"] = get_build_dependencies(section_dict["Build-Depends-Indep"],
@@ -193,6 +187,20 @@ def main():
           get_dependencies(section_dict["Package"][pack_name]["Depends"], global_req, base_control)
 
       load_control()
+
+      section_dict["Build-Depends"] = normalize(section_dict["Build-Depends"],
+        base_control, control_base, control_internal)
+      section_dict["Build-Depends-Indep"] = normalize(section_dict["Build-Depends-Indep"],
+        base_control, control_base, control_internal)
+      section_dict["OnlyIf-Build-Depends"] = normalize(section_dict["OnlyIf-Build-Depends"],
+        base_control, control_base, control_internal)
+      section_dict["OnlyIf-Build-Depends-Indep"] = normalize(section_dict["OnlyIf-Build-Depends-Indep"],
+        base_control, control_base, control_internal)
+      section_dict["OnlyIf-Build-Conflicts"] = normalize(section_dict["OnlyIf-Build-Conflicts"],
+        base_control, control_base, control_internal)
+
+      exclude_excepts(section_dict["Build-Depends-Indep"], build_excepts)
+      exclude_excepts(section_dict["Build-Depends"], build_excepts)
 
       section_dict["Build-Depends"] = update_depends(section_dict["Build-Depends"],
         normalized_global_req, section_dict["OnlyIf-Build-Depends"].keys())
@@ -256,11 +264,12 @@ def update_depends(depends, global_req, not_update):
       for pack_name, pack_val in depends.iteritems()])
   return new_depends
 
-def get_build_dependencies(build_depends, global_req, control_base, py_file_names = ["setup.py"]):
-  excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
-    "python-argparse" : {}, "python-ordereddict" : {},
-    "python-multiprocessing": {}, "python-os": {}, section_dict["Source"]: {}}
+def exclude_excepts(depends, excepts):
+  for el in excepts:
+    if depends.has_key(el):
+      del build_depends[el]
 
+def get_build_dependencies(build_depends, global_req, control_base, py_file_names = ["setup.py"]):
   for py_file in py_file_names:
     path_to_py = recur_search(names = py_file)
     packets_from_py = load_packs(path_to_py, control_base)
@@ -268,10 +277,6 @@ def get_build_dependencies(build_depends, global_req, control_base, py_file_name
       build_depends = dict(build_depends.items() + packets_from_py.items())
     else:
       print "There is no any of .py file with build dependencies!"
-
-  for el in excepts:
-    if build_depends.has_key(el):
-      del build_depends[el]
 
   return build_depends
 
