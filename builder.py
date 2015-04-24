@@ -148,6 +148,8 @@ def main():
               "w+") as pack_install:
               pack_install.writelines(re.sub(";\s*", "\n", pack_val["Files"]))
 
+      del_bounds_list = line["DelBounds"]
+
       build_system = line["Buildsystem"]
       build_with = line["BuildWith"]
 
@@ -211,6 +213,13 @@ def main():
       synchronize_with_onlyif(section_dict, "Build-Depends-Indep")
       synchronize_with_onlyif(section_dict, "Build-Conflicts")
 
+      if section_dict["Build-Depends"]:
+        filter_bounds(section_dict["Build-Depends"], del_bounds_list)
+      if section_dict["Build-Depends-Indep"]:
+        filter_bounds(section_dict["Build-Depends-Indep"], del_bounds_list)
+      if section_dict["Build-Conflicts"]:
+        filter_bounds(section_dict["Build-Conflicts"], del_bounds_list)
+
       for pack_name in section_dict["Package"].keys():
         for dep_sect in dep_sects_list:
           if section_dict["Package"][pack_name][dep_sect]:
@@ -221,6 +230,7 @@ def main():
             section_dict["Package"][pack_name][dep_sect] = \
               update_depends(section_dict["Package"][pack_name][dep_sect], normalized_global_req,
                 section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)])
+            filter_bounds(section_dict["Package"][pack_name][dep_sect], del_bounds_list)
 
       generate_control()
       generate_rules(build_system, build_with)
@@ -465,6 +475,12 @@ def load_control(control_file_name = "control"):
   except (IOError, TypeError):
     print "There is no control file!"
 
+
+def filter_bounds(section_in_dict, del_bounds_list):
+  for pack_name in section_in_dict.keys():
+    section_in_dict[pack_name] = set(dep_el
+      for dep_el in section_in_dict[pack_name]
+        if dep_el[0] not in del_bounds_list)
 
 def generate_control(control_file_name = "control"):
 

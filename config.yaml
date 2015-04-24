@@ -51,6 +51,10 @@ Package:
 # according global requirements
 Update: False
 
+# Listed bound will be deleted in all packages
+# ["<<", ">>", "<=", ">=", "==", "!="]
+DelBounds: ["<<", "!=", "<="]
+
 # Credentials section
 Login: ""
 Password: ""
