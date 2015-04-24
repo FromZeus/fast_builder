@@ -2,7 +2,7 @@
 Source:
 Section: "python"
 Priority:
-Maintainer: "Mirantis OpenStack Team <mos@mirantis.com>"
+Maintainer: 
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:

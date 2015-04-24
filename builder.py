@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
 args = parser.parse_args()
 
-packageName = re.compile("(\d*[a-zA-Z-_.]\d*)+")
+packageName = re.compile("(\d*[a-zA-Z0-9-_.]\d*)+")
 packageEq = re.compile("(>=|<=|>>|<<|==|!=)+")
 packageVers = re.compile("(\d[.]*[a-z+-~:]*)+")
 packageNameEnd = re.compile("[a-zA-Z0-9-_.]+$")
@@ -21,7 +21,7 @@ fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
-  re.compile("(\d*[a-zA-Z-_.]\d*)+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)" \
+  re.compile("(\d*[a-zA-Z0-9-_.]\d*)+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)" \
     "(\|{1}\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*){,1}\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
@@ -41,7 +41,7 @@ user_defined_in_main = set()
 user_defined_in_packets = dict()
 
 def main():
-  #pdb.set_trace()
+  pdb.set_trace()
   try:
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
@@ -386,6 +386,7 @@ def parse_packages(line):
   for pack_idx in entry_list:
     pack = package_with_version.search(line[pack_idx:]).group(0)
     pack_name = packageName.search(pack).group(0)
+    pack = pack[len(pack_name):]
     pack_eq = packageEq.search(pack)
     pack_ver = packageVers.search(pack)
     # weak place: if (<< 0.5 | >> 0.7) will be != 0.5

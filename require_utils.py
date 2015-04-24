@@ -8,7 +8,7 @@ class Require:
 
     packageName = re.compile("[a-zA-Z0-9-_.]+")
     packageEq = re.compile("(>=|<=|>|<|==|!=)+")
-    packageVers = re.compile("[\d.]+")
+    packageVers = re.compile("[\d.a-z-~:]+")
     alpha = re.compile("[a-zA-Z]")
 
     epochRe = re.compile("[(]\d[:]")
