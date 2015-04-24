@@ -2,12 +2,13 @@
 Source:
 Section: "python"
 Priority:
-Maintainer: 
+Maintainer: "MOS Oslo team <mos-oslo@mirantis.com>"
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:
   OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
 Build-Depends-Indep:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
 Build-Conflicts:
 X-Python-Version:
 Standards-Version:
@@ -18,7 +19,7 @@ Vcs-Browser:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-oslotest":
+  "python-oslo.log":
     Architecture:
     Section:
     Pre-Depends:
@@ -32,7 +33,7 @@ Package:
     Suggests:
     Description:
     Files: ""
-  "python-oslotest-doc":
+  "python-oslo.log-doc":
     Architecture:
     Section:
     Pre-Depends:
