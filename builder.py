@@ -25,6 +25,8 @@ package_with_version = \
     "(\|{1}\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*){,1}\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
+base_depends = {"${shlibs:Depends}": {}, "${misc:Depends}": {}}
+
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
 dep_sects_list = ["Pre-Depends", "Depends", "Conflicts", "Provides", "Breaks",
 "Replaces", "Recommends", "Suggests"]
@@ -48,8 +50,10 @@ def main():
 
     control_base_file = open("control-base.json", "r")
     base_control_file = open("base-control.json", "r")
+    control_internal_file = open("control-internal.json", "r")
     control_base = json.load(control_base_file)
     base_control = json.load(base_control_file)
+    control_internal = json.load(control_internal_file)
 
     for line in tempConf:
       depends = dict()
@@ -73,7 +77,7 @@ def main():
       '{0}/global-requirements.txt'.format(global_branch)
       global_req = require_utils.Require.parse_req(
         lan.get_requirements_from_url(req_url, gerritAccount))
-      normalized_global_req = normalize(global_req, base_control, control_base)
+      normalized_global_req = normalize(global_req, base_control, control_base, control_internal)
 
       section_dict["Update"] = line["Update"]
 
@@ -152,15 +156,15 @@ def main():
             user_defined_in_packets[pack_name].add(el)
 
       section_dict["Build-Depends"] = normalize(section_dict["Build-Depends"],
-        base_control, control_base)
+        base_control, control_base, control_internal)
       section_dict["Build-Depends-Indep"] = normalize(section_dict["Build-Depends-Indep"],
-        base_control, control_base)
+        base_control, control_base, control_internal)
       section_dict["OnlyIf-Build-Depends"] = normalize(section_dict["OnlyIf-Build-Depends"],
-        base_control, control_base)
+        base_control, control_base, control_internal)
       section_dict["OnlyIf-Build-Depends-Indep"] = normalize(section_dict["OnlyIf-Build-Depends-Indep"],
-        base_control, control_base)
+        base_control, control_base, control_internal)
       section_dict["OnlyIf-Build-Conflicts"] = normalize(section_dict["OnlyIf-Build-Conflicts"],
-        base_control, control_base)
+        base_control, control_base, control_internal)
 
       #section_dict["Build-Depends"] = get_build_dependencies(section_dict["Build-Depends"],
       #  normalized_global_req, control_base)
@@ -180,10 +184,10 @@ def main():
 
             section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = \
               normalize(section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)],
-                base_control, control_base)
+                base_control, control_base, control_internal)
             section_dict["Package"][pack_name][dep_sect] = \
               normalize(section_dict["Package"][pack_name][dep_sect],
-                base_control, control_base)
+                base_control, control_base, control_internal)
 
         section_dict["Package"][pack_name]["Depends"] = \
           get_dependencies(section_dict["Package"][pack_name]["Depends"], global_req, base_control)
@@ -205,7 +209,7 @@ def main():
             synchronize_with_onlyif(section_dict["Package"][pack_name], dep_sect)
             section_dict["Package"][pack_name][dep_sect] = \
               normalize(section_dict["Package"][pack_name][dep_sect],
-                base_control, control_base)
+                base_control, control_base, control_internal)
             section_dict["Package"][pack_name][dep_sect] = \
               update_depends(section_dict["Package"][pack_name][dep_sect], normalized_global_req,
                 section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)])
@@ -215,6 +219,7 @@ def main():
 
     control_base_file.close()
     base_control_file.close()
+    control_base_file.close()
     conf.close()
 
   except KeyboardInterrupt:
@@ -230,14 +235,16 @@ def packages_processing(section_in_dict):
   for el in section_in_dict.keys():
     section_in_dict[el] = {(el1.items()[0]) for el1 in section_in_dict[el]}
 
-def normalize(depends, base_control, control_base):
+def normalize(depends, base_control, control_base, control_internal):
   if not depends:
     depends = dict()
   new_depends = dict([(base_control[pack_name], {format_sign(el) for el in pack_val})
     if check_in_base(base_control, pack_name) else
       (pack_name, {format_sign(el) for el in pack_val})
-      if check_in_base(control_base, pack_name) else ("", "")
-        for pack_name, pack_val in depends.iteritems()])
+      if check_in_base(control_base, pack_name) or pack_name in base_depends.keys() else
+        (control_internal[pack_name], {format_sign(el) for el in pack_val})
+        if check_in_base(control_internal, pack_name) else ("", "")
+          for pack_name, pack_val in depends.iteritems()])
   if new_depends.has_key(""):
     del new_depends[""]
   return new_depends
@@ -276,7 +283,7 @@ def get_dependencies(depends,
   if not depends:
     depends = dict()
 
-  depends = dict(depends.items() + {"${shlibs:Depends}": {}, "${misc:Depends}": {}}.items())
+  depends = dict(depends.items() + base_depends.items())
   try:
     with open(recur_search(req_file_names), 'r') as req_file:
       for line in req_file:

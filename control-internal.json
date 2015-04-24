@@ -1,0 +1,14 @@
+{
+    "python-oslo-concurrency":"python-oslo.concurrency",
+    "python-oslo-config":"python-oslo.config",
+    "python-oslo-context":"python-oslo.context",
+    "python-oslo-db":"python-oslo.db",
+    "python-oslo-i18n":"python-oslo.i18n",
+    "python-oslo-log":"python-oslo.log",
+    "python-oslo-messaging":"python-oslo.messaging",
+    "python-oslo-middleware":"python-oslo.middleware",
+    "python-oslo-rootwrap":"python-oslo.rootwrap",
+    "python-oslo-serialization":"python-oslo.serialization",
+    "python-oslo-utils":"python-oslo.utils",
+    "python-oslo-vmware":"python-oslo.vmware"
+}
