@@ -41,7 +41,7 @@ user_defined_in_main = set()
 user_defined_in_packets = dict()
 
 def main():
-  pdb.set_trace()
+  #pdb.set_trace()
   try:
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
