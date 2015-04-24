@@ -4,6 +4,7 @@
     "cmd2":"cmd2",
     "debhelper":"debhelper",
     "doc":"doc8",
+    "dpkg":"dpkg",
     "python-httplib2":"httplib2",
     "python-httpretty":"httpretty",
     "mako":"Mako",

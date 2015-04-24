@@ -204,6 +204,9 @@ def main():
           if section_dict["Package"][pack_name][dep_sect]:
             synchronize_with_onlyif(section_dict["Package"][pack_name], dep_sect)
             section_dict["Package"][pack_name][dep_sect] = \
+              normalize(section_dict["Package"][pack_name][dep_sect],
+                base_control, control_base)
+            section_dict["Package"][pack_name][dep_sect] = \
               update_depends(section_dict["Package"][pack_name][dep_sect], normalized_global_req,
                 section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)])
 

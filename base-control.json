@@ -58,6 +58,7 @@
     "dnspython":"python-dnspython",
     "doc8":"doc",
     "dogpile.cache":"python-dogpile.cache",
+    "dpkg":"dpkg",
     "eventlet":"python-eventlet",
     "extras":"python-extras",
     "feedparser":"python-feedparser",
