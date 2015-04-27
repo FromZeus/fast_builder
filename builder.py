@@ -321,22 +321,25 @@ def get_dependencies(depends,
   req_file_names = ["requires.txt", "requirements.txt"],
   update = True):
 
-  depends = add_base_depends(depends)
-
   try:
     with open(recur_search(req_file_names), 'r') as req_file:
       for pack_name, pack_val in require_utils.Require.parse_req(req_file).iteritems():
-        if base_control.has_key(pack_name):
-          depends.setdefault(base_control[pack_name], pack_val)
+        base_el = check_in_base(base_control, pack_name)
+        base_el = (check_in_base(base_control, re.sub("-", "_", pack_name))
+          if not base_el else base_el)
+        base_el = (base_control.has_key(base_control, re.sub("_", "-", pack_name))
+          if not base_el else base_el)
+        if base_el:
+          depends.setdefault(base_control[base_el], pack_val)
   except (IOError, TypeError):
     print "There is no requirements!"
   return depends
 
 def check_in_base(base, el):
   if base.has_key(el):
-    return True
+    return el
   else:
-    return False
+    return None
 
 def format_sign(el):
   if el[0] == "<":

@@ -32,7 +32,7 @@ Package:
     Recommends:
     Suggests:
     Description:
-    Files: ""
+    Files: "usr/lib"
     Main: True
   "python-gabbi-doc":
     Architecture: 
