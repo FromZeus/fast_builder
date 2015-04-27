@@ -27,6 +27,12 @@ In the config.yaml file you can see fields with names same as in control file. P
 
 - Files
     You can specify that for every package if you build more than one subpackage. Example: "usr/bin;usr/lib" for main package; "usr/share/icons/; usr/share/package_name/; usr/share/locale/" - for common package. Every single location have to be separated with ";" symbol.
+- Main
+    This is an identificator of main package. If it's set then packages from requirements.txt will be added in Depends of this package.
+- ControlInternal
+    Make utility check "control-internal.json" base for matching with packets that didn't match any package in main base.
+- Update
+    Update or not update versions of all dependencies.
 - Login
     Your launchpad e-mail.
 - Password
