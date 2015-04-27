@@ -195,6 +195,7 @@
     "websockify":"websockify",
     "wheel":"wheel",
     "wsgi_intercept":"python-wsgi-intercept",
+    "wsgi-intercept":"python-wsgi-intercept",
     "wsgiref":"python-wsgiref",
     "xattr":"python-xattr",
     "xvfbwrapper":"xvfbwrapper",

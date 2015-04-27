@@ -249,7 +249,7 @@ def main():
 
     control_base_file.close()
     base_control_file.close()
-    control_base_file.close()
+    control_internal_file.close()
     conf.close()
 
   except KeyboardInterrupt:
@@ -327,7 +327,7 @@ def get_dependencies(depends,
     with open(recur_search(req_file_names), 'r') as req_file:
       for pack_name, pack_val in require_utils.Require.parse_req(req_file).iteritems():
         if base_control.has_key(pack_name):
-           depends.setdefault(base_control[pack_name], pack_val)
+          depends.setdefault(base_control[pack_name], pack_val)
   except (IOError, TypeError):
     print "There is no requirements!"
   return depends

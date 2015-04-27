@@ -70,6 +70,6 @@ Branch: kilo
 
 # rules section
 # pybuild, python_distutils
-Buildsystem: 
+Buildsystem: python_distutils
 # python2, python3, sphinxdoc
-BuildWith: 
+BuildWith: python2
