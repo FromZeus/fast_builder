@@ -49,11 +49,16 @@ Package:
 
 # If "True" then nothing will be update
 # according global requirements
-Update: False
+Update: True
 
 # Listed bound will be deleted in all packages
 # ["<<", ">>", "<=", ">=", "==", "!="]
 DelBounds: ["<<", "!=", "<="]
+
+# If "True" then packages that didn't match
+# any package in main base will be checked
+# in "control-internal" base
+ControlInternal: True
 
 # Credentials section
 Login: ""
