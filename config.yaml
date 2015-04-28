@@ -19,7 +19,7 @@ Vcs-Browser:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-heatclient":
+  "python-django":
     Architecture:
     Section:
     Pre-Depends:
@@ -55,6 +55,6 @@ Branch: kilo
 
 # rules section
 # pybuild, python_distutils
-Buildsystem: python_distutils
+Buildsystem: 
 # python2, python3, sphinxdoc
-BuildWith: python2
+BuildWith: 

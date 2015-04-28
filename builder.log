@@ -1,75 +1,73 @@
-Unknown package in control file: autobahn
-Unknown package in control file: os-collect-config
-Unknown package in control file: pystache
-Unknown package in control file: openstackdocstheme
-Unknown package in control file: cffi
-Unknown package in control file: PyECLib
-Unknown package in control file: python-openstacksdk
-Unknown package in control file: Werkzeug
-Unknown package in control file: diskimage-builder
-Unknown package in control file: ddt
-Unknown package in control file: debtcollector
-Unknown package in control file: wrapt
-Unknown package in control file: requests-aws
-Unknown package in control file: os-net-config
-Unknown package in control file: Pillow
-Unknown package in control file: mccabe
-Unknown package in control file: pyngus
-Unknown package in control file: sysv_ipc
-Unknown package in control file: falcon
-Unknown package in control file: XStatic-Spin
-Unknown package in control file: XStatic-Magic-Search
-Unknown package in control file: cassandra-driver
-Unknown package in control file: XStatic-Angular-lrdragndrop
-Unknown package in control file: XStatic-Hogan
-Unknown package in control file: XStatic-JSEncrypt
-Unknown package in control file: XStatic-Angular-irdragndrop
-Unknown package in control file: oslo.policy
-Unknown package in control file: os-apply-config
-Unknown package in control file: kafka-python
-Unknown package in control file: os-refresh-config
-Unknown package in control file: XStatic-term.js
-Unknown package in control file: tripleo-image-elements
-Unknown package in control file: PyMySQL
-Unknown package in control file: ceilometermiddleware
-Unknown package in control file: XStatic-Rickshaw
-Unknown package in control file: elasticsearch
-Unknown package in control file: XStatic-Font-Awesome
-Unknown package in control file: coinor.pulp
-Unknown package in control file: XStatic-smart-table
-Unknown package in control file: os-cloud-config
-Unknown package in control file: hgtools
-Unknown package in control file: XStatic-jQuery
-Unknown package in control file: demjson
-Unknown package in control file: sphinxcontrib-seqdiag
-Unknown package in control file: oslo.versionedobjects
-Unknown package in control file: XenAPI
-Unknown package in control file: XStatic-Bootstrap-SCSS
-Unknown package in control file: argcomplete
-Unknown package in control file: XStatic-QUnit
-Unknown package in control file: openstack.nose_plugin
-Unknown package in control file: pymemcache
-Unknown package in control file: semantic_version
-Unknown package in control file: XStatic-D3
-Unknown package in control file: pyghmi
-Unknown package in control file: pykmip
-Unknown package in control file: dib-utils
-Unknown package in control file: XStatic-Jasmine
-Unknown package in control file: XStatic-Angular-Bootstrap
-Unknown package in control file: gabbi
-Unknown package in control file: os-client-config
-Unknown package in control file: pip
-Unknown package in control file: sockjs-tornado
-Unknown package in control file: suds-jurko
-Unknown package in control file: XStatic-JQuery.TableSorter
-Unknown package in control file: aioeventlet
-Unknown package in control file: XStatic-Angular
-Unknown package in control file: XStatic-JQuery.quicksearch
-Unknown package in control file: beautifulsoup4
-Unknown package in control file: XStatic-JQuery.Bootstrap.Wizard
-Unknown package in control file: enum34
-Unknown package in control file: XStatic-Bootstrap-Datepicker
-Unknown package in control file: XStatic-JQuery-Migrate
-There is no any of .py file with build dependencies!
-There is no requirements!
-Unknown package in control file: lsb-release
+Unknown package: autobahn
+Unknown package: os-collect-config
+Unknown package: pystache
+Unknown package: openstackdocstheme
+Unknown package: cffi
+Unknown package: PyECLib
+Unknown package: python-openstacksdk
+Unknown package: Werkzeug
+Unknown package: diskimage-builder
+Unknown package: ddt
+Unknown package: debtcollector
+Unknown package: wrapt
+Unknown package: requests-aws
+Unknown package: os-net-config
+Unknown package: Pillow
+Unknown package: mccabe
+Unknown package: pyngus
+Unknown package: sysv_ipc
+Unknown package: falcon
+Unknown package: XStatic-Spin
+Unknown package: XStatic-Magic-Search
+Unknown package: cassandra-driver
+Unknown package: XStatic-Angular-lrdragndrop
+Unknown package: XStatic-Hogan
+Unknown package: XStatic-JSEncrypt
+Unknown package: XStatic-Angular-irdragndrop
+Unknown package: oslo.policy
+Unknown package: os-apply-config
+Unknown package: kafka-python
+Unknown package: os-refresh-config
+Unknown package: XStatic-term.js
+Unknown package: tripleo-image-elements
+Unknown package: PyMySQL
+Unknown package: ceilometermiddleware
+Unknown package: XStatic-Rickshaw
+Unknown package: elasticsearch
+Unknown package: XStatic-Font-Awesome
+Unknown package: coinor.pulp
+Unknown package: XStatic-smart-table
+Unknown package: os-cloud-config
+Unknown package: hgtools
+Unknown package: XStatic-jQuery
+Unknown package: demjson
+Unknown package: sphinxcontrib-seqdiag
+Unknown package: oslo.versionedobjects
+Unknown package: XenAPI
+Unknown package: XStatic-Bootstrap-SCSS
+Unknown package: argcomplete
+Unknown package: XStatic-QUnit
+Unknown package: openstack.nose_plugin
+Unknown package: pymemcache
+Unknown package: semantic_version
+Unknown package: XStatic-D3
+Unknown package: pyghmi
+Unknown package: pykmip
+Unknown package: dib-utils
+Unknown package: XStatic-Jasmine
+Unknown package: XStatic-Angular-Bootstrap
+Unknown package: gabbi
+Unknown package: os-client-config
+Unknown package: pip
+Unknown package: sockjs-tornado
+Unknown package: suds-jurko
+Unknown package: XStatic-JQuery.TableSorter
+Unknown package: aioeventlet
+Unknown package: XStatic-Angular
+Unknown package: XStatic-JQuery.quicksearch
+Unknown package: beautifulsoup4
+Unknown package: XStatic-JQuery.Bootstrap.Wizard
+Unknown package: enum34
+Unknown package: XStatic-Bootstrap-Datepicker
+Unknown package: XStatic-JQuery-Migrate
+Unknown package in requirements file: bcrypt

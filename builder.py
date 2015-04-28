@@ -84,8 +84,10 @@ def main():
       '{0}/global-requirements.txt'.format(global_branch)
       global_req = require_utils.Require.parse_req(
         lan.get_requirements_from_url(req_url, gerritAccount))
+      print "Normalize global requirements"
       normalized_global_req = normalize(global_req, base_control, control_base,
         control_internal, control_internal_check)
+      print "Global requirements has been normalized successfully!"
 
       section_dict["Update"] = line["Update"]
 
@@ -170,6 +172,7 @@ def main():
         normalized_global_req, control_base)
 
       for pack_name in section_dict["Package"].keys():
+        build_excepts[pack_name] = {}
         for dep_sect in dep_sects_list:
           section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = dict()
           if section_dict["Package"][pack_name][dep_sect]:
@@ -280,7 +283,7 @@ def normalize(depends, base_control, control_base, control_internal, control_int
   _new_depends = dict()
   for pack_name, pack_val in new_depends.iteritems():
     if pack_val == "unknown":
-      print "Unknown package in control file: {0}".format(pack_name)
+      print "Unknown package: {0}".format(pack_name)
     else:
       _new_depends[pack_name] = pack_val
 
@@ -296,7 +299,7 @@ def update_depends(depends, global_req, not_update):
 def exclude_excepts(depends, excepts):
   for el in excepts:
     if depends.has_key(el):
-      del build_depends[el]
+      del depends[el]
 
 def get_build_dependencies(build_depends, global_req, control_base, py_file_names = ["setup.py"]):
   for py_file in py_file_names:
@@ -318,8 +321,7 @@ def add_base_depends(depends):
 def get_dependencies(depends,
   global_req,
   base_control,
-  req_file_names = ["requires.txt", "requirements.txt"],
-  update = True):
+  req_file_names = ["requires.txt", "requirements.txt"]):
 
   try:
     with open(recur_search(req_file_names), 'r') as req_file:
@@ -327,10 +329,12 @@ def get_dependencies(depends,
         base_el = check_in_base(base_control, pack_name)
         base_el = (check_in_base(base_control, re.sub("-", "_", pack_name))
           if not base_el else base_el)
-        base_el = (base_control.has_key(base_control, re.sub("_", "-", pack_name))
+        base_el = (check_in_base(base_control, re.sub("_", "-", pack_name))
           if not base_el else base_el)
         if base_el:
           depends.setdefault(base_control[base_el], pack_val)
+        else:
+          print "Unknown package in requirements file: {0}".format(pack_name)
   except (IOError, TypeError):
     print "There is no requirements!"
   return depends
@@ -361,7 +365,7 @@ def load_packs(path, control_base):
   except (IOError, TypeError):
     return None
 
-def recur_search(names, relative_path = ".", search_type = "default"):
+def recur_search(names, relative_path = "."):
   for el in listdir(relative_path):
     if el in names:
       return join(relative_path, el)
@@ -391,7 +395,7 @@ def filter_packs(line, control_base):
       or req_pack_name.endswith('.rst') \
       or not res_pack_name_part:
       if res_pack_name:
-        print "Unknown package: {0}".format(res_pack_name)
+        print "Unknown package in .py file: {0}".format(res_pack_name)
       return None
     else:
       return res_pack_name_part
@@ -416,9 +420,9 @@ def filter_packs(line, control_base):
     elif imp and res_pack_name_imp_part:
       return res_pack_name_imp_part
     elif res_pack_name_imp and not res_pack_name_imp_part:
-      print "Unknown package: {0}".format(res_pack_name_imp)
+      print "Unknown package in .py file: {0}".format(res_pack_name_imp)
     elif res_pack_name_frm and not res_pack_name_frm_part:
-      print "Unknown package: {0}".format(res_pack_name_frm_part)
+      print "Unknown package in .py file: {0}".format(res_pack_name_frm_part)
   return None
 
 def part_of_package(package, packages):
