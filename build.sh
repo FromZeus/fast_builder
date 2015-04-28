@@ -65,7 +65,13 @@ main()
 
   popd
 
-  if [[ $(find ./package/* -type d -name "*") == "" && "${tarName}" != "" ]]; then
+  if [[ $(find ./package/* -type d -name "*") == "" ]]; then
+
+    if [[ "${tarName}" == "" ]]; then
+      echo "Nothing to do here"
+      exit 0
+    fi
+    
     pushd "package"
     mkdir "${dirName}"
     pushd "${dirName}"
@@ -76,9 +82,6 @@ main()
     rm -rf ${buf}
     popd
     popd
-  else
-    echo "Nothing to do here"
-    exit 0
   fi
 
   if [[ "$(check_in_array 1 ${in_stages[@]})" == "1" ]]; then

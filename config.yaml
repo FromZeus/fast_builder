@@ -19,7 +19,7 @@ Vcs-Browser:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-gabbi":
+  "python-heatclient":
     Architecture:
     Section:
     Pre-Depends:
@@ -32,23 +32,8 @@ Package:
     Recommends:
     Suggests:
     Description:
-    Files: "usr/lib"
-    Main: True
-  "python-gabbi-doc":
-    Architecture: 
-    Section:
-    Pre-Depends:
-    Depends:
-      OnlyIf: {"pbr": [{">=": "0.10"}]}
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
     Files: ""
-    Main: 
+    Main: True
 
 # If "True" then nothing will be update
 # according global requirements
@@ -56,7 +41,7 @@ Update: True
 
 # Listed bound will be deleted in all packages
 # ["<<", ">>", "<=", ">=", "==", "!="]
-DelBounds: ["<<", "!=", "<="]
+DelBounds: ["<<", "<="]
 
 # If "True" then packages that didn't match
 # any package in main base will be checked

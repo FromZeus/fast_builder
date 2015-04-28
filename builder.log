@@ -70,3 +70,6 @@ Unknown package in control file: XStatic-JQuery.Bootstrap.Wizard
 Unknown package in control file: enum34
 Unknown package in control file: XStatic-Bootstrap-Datepicker
 Unknown package in control file: XStatic-JQuery-Migrate
+There is no any of .py file with build dependencies!
+There is no requirements!
+Unknown package in control file: lsb-release
