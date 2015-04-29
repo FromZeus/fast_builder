@@ -33,6 +33,8 @@ In the config.yaml file you can see fields with names same as in control file. P
     Make utility check "control-internal.json" base for matching with packets that didn't match any package in main base.
 - Update
     Update or not update versions of all dependencies.
+- UpdateIfBounds
+    Update only packages which already have bounds.
 - Login
     Your launchpad e-mail.
 - Password
