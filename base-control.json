@@ -1,4 +1,5 @@
 {
+    "adduser":"adduser",
     "Babel":"python-babel",
     "Django":"python-django",
     "Flask":"python-flask",
@@ -111,6 +112,7 @@
     "oslo.serialization":"python-oslo.serialization",
     "oslo.utils":"python-oslo.utils",
     "oslo.vmware":"python-oslo.vmware",
+    "oslo.versionedobjects":"python-oslo.versionedobjects",
     "oslosphinx":"python-oslosphinx",
     "oslotest":"python-oslotest",
     "osprofiler":"python-osprofiler",
@@ -209,5 +211,11 @@
     "openstack-pkg-tools":"openstack-pkg-tools",
     "subunit":"subunit",
     "pkg-resources":"python-pkg-resources",
-    "libjs-sphinxdoc":"libjs-sphinxdoc"
+    "libjs-sphinxdoc":"libjs-sphinxdoc",
+    "autobahn":"python-autobahn",
+    "pystache":"python-pystache",
+    "cffi":"python-cffi",
+    "PyECLib":"python-PyECLib",
+    "python-testrepository":"python-testrepository",
+    "python-docker":"python-docker"
 }

@@ -1,4 +1,5 @@
 {
+    "adduser":"adduser",
     "alembic":"alembic",
     "cliff-tablib":"cliff-tablib",
     "cmd2":"cmd2",
@@ -108,6 +109,7 @@
     "python-oslo.vmware":"oslo.vmware",
     "python-oslosphinx":"oslosphinx",
     "python-oslotest":"oslotest",
+    "python-oslo.versionedobjects":"oslo.versionedobjects",
     "python-osprofiler":"osprofiler",
     "python-paramiko":"paramiko",
     "python-passlib":"passlib",
@@ -209,5 +211,11 @@
     "openstack-pkg-tools":"openstack-pkg-tools",
     "subunit":"subunit",
     "python-pkg-resources":"pkg-resources",
-    "libjs-sphinxdoc":"libjs-sphinxdoc"
+    "libjs-sphinxdoc":"libjs-sphinxdoc",
+    "python-autobahn":"autobahn",
+    "python-pystache":"pystache",
+    "python-cffi":"cffi",
+    "python-PyECLib":"PyECLib",
+    "python-testrepository":"python-testrepository",
+    "python-docker":"python-docker"
 }

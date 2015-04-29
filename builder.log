@@ -1,9 +1,7 @@
-Unknown package: autobahn
+Normalize global requirements...
 Unknown package: os-collect-config
-Unknown package: pystache
 Unknown package: openstackdocstheme
-Unknown package: cffi
-Unknown package: PyECLib
+Unknown package: XStatic-Magic-Search
 Unknown package: python-openstacksdk
 Unknown package: Werkzeug
 Unknown package: diskimage-builder
@@ -18,7 +16,6 @@ Unknown package: pyngus
 Unknown package: sysv_ipc
 Unknown package: falcon
 Unknown package: XStatic-Spin
-Unknown package: XStatic-Magic-Search
 Unknown package: cassandra-driver
 Unknown package: XStatic-Angular-lrdragndrop
 Unknown package: XStatic-Hogan
@@ -31,7 +28,6 @@ Unknown package: os-refresh-config
 Unknown package: XStatic-term.js
 Unknown package: tripleo-image-elements
 Unknown package: PyMySQL
-Unknown package: ceilometermiddleware
 Unknown package: XStatic-Rickshaw
 Unknown package: elasticsearch
 Unknown package: XStatic-Font-Awesome
@@ -42,7 +38,7 @@ Unknown package: hgtools
 Unknown package: XStatic-jQuery
 Unknown package: demjson
 Unknown package: sphinxcontrib-seqdiag
-Unknown package: oslo.versionedobjects
+Unknown package: ceilometermiddleware
 Unknown package: XenAPI
 Unknown package: XStatic-Bootstrap-SCSS
 Unknown package: argcomplete
@@ -70,4 +66,6 @@ Unknown package: XStatic-JQuery.Bootstrap.Wizard
 Unknown package: enum34
 Unknown package: XStatic-Bootstrap-Datepicker
 Unknown package: XStatic-JQuery-Migrate
-Unknown package in requirements file: bcrypt
+Global requirements has been normalized successfully!
+There is no any of .py file with build dependencies!
+There is no requirements!

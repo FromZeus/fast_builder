@@ -1,8 +1,8 @@
 # general control section
 Source:
-Section: "python"
+Section: "web"
 Priority:
-Maintainer: "MOS Nova Team <mos-nova@mirantis.com>"
+Maintainer: "MOS Heat Team <mos-heat@mirantis.com>"
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:
@@ -15,11 +15,12 @@ Standards-Version:
 Homepage:
 Vcs-Svn:
 Vcs-Browser:
+XS-Testsuite: 
 
 # packages section
 # "Package" is necessary field
 Package:
-  "python-django":
+  "python-heat":
     Architecture:
     Section:
     Pre-Depends:
@@ -34,14 +35,108 @@ Package:
     Description:
     Files: ""
     Main: True
+  "heat-common":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "heat-docker":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "heat-engine":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "heat-api":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "heat-api-cfn":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "heat-api-cloudwatch":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
 
 # If "True" then nothing will be update
 # according global requirements
 Update: True
 
+# If "True" then only packages with
+# bounds already set will be updated
+UpdateIfBounds: 
+
 # Listed bound will be deleted in all packages
 # ["<<", ">>", "<=", ">=", "==", "!="]
-DelBounds: ["<<", "<="]
+DelBounds: ["<<", "<=", "!="]
 
 # If "True" then packages that didn't match
 # any package in main base will be checked
@@ -55,6 +150,6 @@ Branch: kilo
 
 # rules section
 # pybuild, python_distutils
-Buildsystem: 
+Buildsystem: python_distutils
 # python2, python3, sphinxdoc
-BuildWith: 
+BuildWith: python2

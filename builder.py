@@ -21,8 +21,8 @@ fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 package_with_version = \
-  re.compile("[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)" \
-    "(\|{1}\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*){,1}\)){,1},")
+  re.compile("[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1}" \
+    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 
 base_depends = {"${shlibs:Depends}": {}, "${misc:Depends}": {}}
@@ -30,7 +30,7 @@ build_excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup"
   "python-argparse" : {}, "python-ordereddict" : {},
   "python-multiprocessing": {}, "python-os": {}}
 
-build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep"]
+build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep", "Build-Conflicts"]
 dep_sects_list = ["Pre-Depends", "Depends", "Conflicts", "Provides", "Breaks",
 "Replaces", "Recommends", "Suggests"]
 def_main_section_list = ["Source", "Section", "Priority", "Maintainer",
@@ -39,12 +39,13 @@ def_main_section_list = ["Source", "Section", "Priority", "Maintainer",
 def_package_section_list = ["Architecture", "Section", "Description"]
 main_section_list = ["Source", "Section", "Priority", "Maintainer",
 "XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "Build-Depends",
-"Build-Depends-Indep", "Standards-Version", "Homepage", "Vcs-Svn", "Vcs-Browser"]
+"Build-Depends-Indep", "Standards-Version", "Homepage", "Vcs-Svn", "Vcs-Browser", "XS-Testsuite"]
 package_section_list = ["Architecture", "Section", "Pre-Depends", "Depends", "Conflicts",
 "Provides", "Breaks", "Replaces", "Recommends", "Suggests", "Description"]
 section_dict = dict()
 user_defined_in_main = set()
 user_defined_in_packets = dict()
+packs_without_bounds = set()
 
 def main():
   #pdb.set_trace()
@@ -69,6 +70,7 @@ def main():
 
       del_bounds_list = line["DelBounds"]
       control_internal_check = line["ControlInternal"]
+      update_if_bounds = line["UpdateIfBounds"]
 
       if global_branch == 'master':
         global_branch = 'master'
@@ -84,7 +86,7 @@ def main():
       '{0}/global-requirements.txt'.format(global_branch)
       global_req = require_utils.Require.parse_req(
         lan.get_requirements_from_url(req_url, gerritAccount))
-      print "Normalize global requirements"
+      print "Normalize global requirements..."
       normalized_global_req = normalize(global_req, base_control, control_base,
         control_internal, control_internal_check)
       print "Global requirements has been normalized successfully!"
@@ -110,32 +112,13 @@ def main():
       section_dict["OnlyIf-Build-Depends"] = section_dict["OnlyIf-Build-Depends-Indep"] = \
         section_dict["OnlyIf-Build-Conflicts"] = dict()
 
-      #-------------------------------------------------------------#
-
-      section_dict["Build-Depends"] = line["Build-Depends"]
-      if line["Build-Depends"]:
-        section_dict["Build-Depends"] = separate_onlyif_section(section_dict["Build-Depends"])
-        if line["Build-Depends"].has_key("OnlyIf"):
-          section_dict["OnlyIf-Build-Depends"] = line["Build-Depends"]["OnlyIf"]
-          packages_processing(section_dict["OnlyIf-Build-Depends"])
-
-      #-------------------------------------------------------------#
-
-      section_dict["Build-Depends-Indep"] = line["Build-Depends-Indep"]
-      if section_dict["Build-Depends-Indep"]:
-        section_dict["Build-Depends-Indep"] = separate_onlyif_section(section_dict["Build-Depends-Indep"])
-        if line["Build-Depends-Indep"].has_key("OnlyIf"):
-          section_dict["OnlyIf-Build-Depends-Indep"] = line["Build-Depends-Indep"]["OnlyIf"]
-          packages_processing(section_dict["OnlyIf-Build-Depends-Indep"])
-
-      #-------------------------------------------------------------#
-      
-      section_dict["Build-Conflicts"] = line["Build-Conflicts"]
-      if section_dict["Build-Conflicts"]:
-        section_dict["Build-Conflicts"] = separate_onlyif_section(section_dict["Build-Conflicts"])
-        if line["Build-Conflicts"].has_key("OnlyIf"):
-          section_dict["OnlyIf-Build-Conflicts"] = line["Build-Conflicts"]["OnlyIf"]
-          packages_processing(section_dict["OnlyIf-Build-Conflicts"])
+      for sect in build_dep_sects_list:
+        section_dict[sect] = line[sect]
+        if line[sect]:
+          section_dict[sect] = separate_onlyif_section(section_dict[sect])
+          if line[sect].has_key("OnlyIf"):
+            section_dict["OnlyIf-{0}".format(sect)] = line[sect]["OnlyIf"]
+            packages_processing(section_dict["OnlyIf-{0}".format(sect)])
       
       #-------------------------------------------------------------#
 
@@ -144,6 +127,7 @@ def main():
       section_dict["Homepage"] = line["Homepage"]
       section_dict["Vcs-Svn"] = line["Vcs-Svn"]
       section_dict["Vcs-Browser"] = line["Vcs-Browser"]
+      section_dict["XS-Testsuite"] = line["XS-Testsuite"]
 
       section_dict["Package"] = line["Package"]
 
@@ -198,49 +182,55 @@ def main():
 
       load_control()
 
-      section_dict["Build-Depends"] = normalize(section_dict["Build-Depends"],
-        base_control, control_base, control_internal, control_internal_check)
-      section_dict["Build-Depends-Indep"] = normalize(section_dict["Build-Depends-Indep"],
-        base_control, control_base, control_internal, control_internal_check)
-      section_dict["OnlyIf-Build-Depends"] = normalize(section_dict["OnlyIf-Build-Depends"],
-        base_control, control_base, control_internal, control_internal_check)
-      section_dict["OnlyIf-Build-Depends-Indep"] = normalize(section_dict["OnlyIf-Build-Depends-Indep"],
-        base_control, control_base, control_internal, control_internal_check)
-      section_dict["OnlyIf-Build-Conflicts"] = normalize(section_dict["OnlyIf-Build-Conflicts"],
-        base_control, control_base, control_internal, control_internal_check)
+      for sect in build_dep_sects_list:
+        section_dict[sect] = normalize(section_dict[sect],
+          base_control, control_base, control_internal, control_internal_check)
+        section_dict["OnlyIf-{0}".format(sect)] = normalize(section_dict["OnlyIf-{0}".format(sect)],
+          base_control, control_base, control_internal, control_internal_check)
+        if update_if_bounds:
+          for pack_name, pack_val in section_dict[sect].iteritems():
+            if not pack_val:
+              packs_without_bounds.add(pack_name)
 
       exclude_excepts(section_dict["Build-Depends-Indep"], build_excepts)
       exclude_excepts(section_dict["Build-Depends"], build_excepts)
 
       if section_dict["Update"]:
         section_dict["Build-Depends"] = update_depends(section_dict["Build-Depends"],
-          normalized_global_req, section_dict["OnlyIf-Build-Depends"].keys())
+          normalized_global_req, section_dict["OnlyIf-Build-Depends"].keys() + list(packs_without_bounds))
         section_dict["Build-Depends-Indep"] = update_depends(section_dict["Build-Depends-Indep"],
-          normalized_global_req, section_dict["OnlyIf-Build-Depends-Indep"].keys())
+          normalized_global_req, section_dict["OnlyIf-Build-Depends-Indep"].keys() + list(packs_without_bounds))
 
-      synchronize_with_onlyif(section_dict, "Build-Depends")
-      synchronize_with_onlyif(section_dict, "Build-Depends-Indep")
-      synchronize_with_onlyif(section_dict, "Build-Conflicts")
 
-      if section_dict["Build-Depends"]:
-        filter_bounds(section_dict["Build-Depends"], del_bounds_list)
-      if section_dict["Build-Depends-Indep"]:
-        filter_bounds(section_dict["Build-Depends-Indep"], del_bounds_list)
-      if section_dict["Build-Conflicts"]:
-        filter_bounds(section_dict["Build-Conflicts"], del_bounds_list)
+      for sect in build_dep_sects_list:
+        synchronize_with_onlyif(section_dict, sect)
+        if section_dict[sect]:
+          filter_bounds(section_dict[sect], del_bounds_list)
+
+      packs_without_bounds.clear()
 
       for pack_name in section_dict["Package"].keys():
         for dep_sect in dep_sects_list:
+
           if section_dict["Package"][pack_name][dep_sect]:
             synchronize_with_onlyif(section_dict["Package"][pack_name], dep_sect)
             section_dict["Package"][pack_name][dep_sect] = \
               normalize(section_dict["Package"][pack_name][dep_sect],
                 base_control, control_base, control_internal, control_internal_check)
+
             if section_dict["Update"]:
+
+              if update_if_bounds:
+                for _pack_name, _pack_val in section_dict["Package"][pack_name][dep_sect].iteritems():
+                  if not _pack_val:
+                    packs_without_bounds.add(_pack_name)
+
               section_dict["Package"][pack_name][dep_sect] = \
                 update_depends(section_dict["Package"][pack_name][dep_sect], normalized_global_req,
-                  section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)])
+                  section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)].keys() + \
+                    list(packs_without_bounds))
             filter_bounds(section_dict["Package"][pack_name][dep_sect], del_bounds_list)
+
         if not section_dict["Package"][pack_name]["Architecture"]:
           section_dict["Package"][pack_name]["Architecture"] = "any"
         if not section_dict["Package"][pack_name]["Description"]:
@@ -439,14 +429,18 @@ def parse_packages(line):
     pack_name = packageName.search(pack).group(0)
     pack = pack[len(pack_name):]
     pack_eq = packageEq.search(pack)
+    if pack_eq:
+      pack_eq = pack_eq.group(0)
     pack_ver = packageVers.search(pack)
+    if pack_ver:
+      pack_ver = pack_ver.group(0)
     # weak place: if (<< 0.5 | >> 0.7) will be != 0.5
     # instead of range != 0.5, != 0.6, != 0.7
     if package_ver_not_equal.search(pack):
       pack_eq = "!="
     res.setdefault(pack_name, set())
     if pack_eq and pack_ver:
-      res[pack_name].add((pack_eq.group(0), pack_ver.group(0)))
+      res[pack_name].add((pack_eq, pack_ver))
   return res
 
 def load_control(control_file_name = "control"):
