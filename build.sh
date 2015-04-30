@@ -4,6 +4,7 @@
 
 bold=`tput bold`
 normal=`tput sgr0`
+config_file="config.yaml"
 in_stages=()
 
 except()
@@ -15,6 +16,10 @@ except()
       ;;
     -s)
       echo "-s Stages are not specified"
+      exit 1
+      ;;
+    -c)
+      echo "-c Config file is not presented"
       exit 1
       ;;
   esac
@@ -96,7 +101,7 @@ main()
 
   if [[ "$(check_in_array 2 ${in_stages[@]})" == "1" ]]; then
     echo "${bold}"
-    python builder.py -c "config.yaml" | tee builder.log
+    python builder.py -c "${config_file}" | tee builder.log
     echo "${normal}"
   fi
 
@@ -147,6 +152,14 @@ do
         except -s
       fi
       ;;
+    -c)
+      shift
+      if [ $# -gt 0 ]; then
+        config_file="$1"
+      else
+        except -c
+      fi
+      ;; 
     -h)
       usage
       shift
