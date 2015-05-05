@@ -1,8 +1,8 @@
 # general control section
 Source:
-Section: "web"
+Section: "python"
 Priority:
-Maintainer: "MOS Heat Team <mos-heat@mirantis.com>"
+Maintainer: "MOS Horizon Team <mos-horizon@mirantis.com>"
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:
@@ -20,7 +20,7 @@ XS-Testsuite:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-heat":
+  "python-gabbi":
     Architecture:
     Section:
     Pre-Depends:
@@ -33,9 +33,9 @@ Package:
     Recommends:
     Suggests:
     Description:
-    Files: ""
+    Files: "/usr/lib"
     Main: True
-  "heat-common":
+  "python-gabbi-doc":
     Architecture:
     Section:
     Pre-Depends:
@@ -50,81 +50,6 @@ Package:
     Description:
     Files: ""
     Main: 
-  "heat-docker":
-    Architecture:
-    Section:
-    Pre-Depends:
-    Depends:
-      OnlyIf: {"pbr": [{">=": "0.10"}]}
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
-    Files: ""
-    Main: 
-  "heat-engine":
-    Architecture:
-    Section:
-    Pre-Depends:
-    Depends:
-      OnlyIf: {"pbr": [{">=": "0.10"}]}
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
-    Files: ""
-    Main: 
-  "heat-api":
-    Architecture:
-    Section:
-    Pre-Depends:
-    Depends:
-      OnlyIf: {"pbr": [{">=": "0.10"}]}
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
-    Files: ""
-    Main: 
-  "heat-api-cfn":
-    Architecture:
-    Section:
-    Pre-Depends:
-    Depends:
-      OnlyIf: {"pbr": [{">=": "0.10"}]}
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
-    Files: ""
-    Main: 
-  "heat-api-cloudwatch":
-    Architecture:
-    Section:
-    Pre-Depends:
-    Depends:
-      OnlyIf: {"pbr": [{">=": "0.10"}]}
-    Conflicts:
-    Provides:
-    Breaks:
-    Replaces:
-    Recommends:
-    Suggests:
-    Description:
-    Files: ""
-    Main:
 
 # If "True" then nothing will be update
 # according global requirements
@@ -153,3 +78,11 @@ Branch: kilo
 Buildsystem: python_distutils
 # python2, python3, sphinxdoc
 BuildWith: python2
+
+# changelog section
+PakageName: 
+Version: 
+# Example of revision: "-1~u14.04+mos1"
+Revision: 
+Tag: 
+Urgency: 
