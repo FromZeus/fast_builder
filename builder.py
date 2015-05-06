@@ -76,6 +76,8 @@ def main():
       global_branch = line["Branch"]
 
       del_bounds_list = line["DelBounds"]
+      if not del_bounds_list:
+        del_bounds_list = []
       control_internal_check = line["ControlInternal"]
       update_if_bounds = line["UpdateIfBounds"]
 
@@ -456,31 +458,31 @@ def parse_packages(line):
 
 def load_control(control_file_name = "control"):
 
-  def add_to_sect(cur_sect, dep_sects_list, section_in_dict, line):
-    if cur_sect in dep_sects_list:
-      packs_in_line = parse_packages(line)
-      if not section_in_dict[cur_sect]:
-        section_in_dict[cur_sect] = dict()
-      for pack_name, pack_val in packs_in_line.iteritems():
-        #if pack_name not in section_in_dict["OnlyIf-{0}".format(cur_sect)].keys():
-        section_in_dict[cur_sect].setdefault(pack_name, pack_val)
-        section_in_dict[cur_sect][pack_name] |= pack_val
-        #else:
-        #  section_in_dict[cur_sect][pack_name] = \
-        #    section_in_dict["OnlyIf-{0}".format(cur_sect)][pack_name]
-    else:
-        sect_templ_line = sectTemplate.search(line)
-        new_line = ""
-        if sect_templ_line:
-          new_line = re.sub(":\s+", "", sect_templ_line.group(0))
-        elif line.startswith(" "):
-          new_line = line
-        section_in_dict[cur_sect] = (section_in_dict[cur_sect] +
-          "\n{0}".format(new_line.rstrip()) if section_in_dict[cur_sect] else new_line)
+  def add_to_dep_sect(cur_sect, section_in_dict, line):
+    packs_in_line = parse_packages(line)
+    if not section_in_dict[cur_sect]:
+      section_in_dict[cur_sect] = dict()
+    for pack_name, pack_val in packs_in_line.iteritems():
+      #if pack_name not in section_in_dict["OnlyIf-{0}".format(cur_sect)].keys():
+      section_in_dict[cur_sect].setdefault(pack_name, pack_val)
+      section_in_dict[cur_sect][pack_name] |= pack_val
+      #else:
+      #  section_in_dict[cur_sect][pack_name] = \
+      #    section_in_dict["OnlyIf-{0}".format(cur_sect)][pack_name]
+
+  def add_to_sect(cur_sect, section_in_dict, line):
+    sect_templ_line = sectTemplate.search(line)
+    new_line = ""
+    if sect_templ_line:
+      new_line = re.sub(":\s+", "", sect_templ_line.group(0))
+    elif line.startswith(" "):
+      new_line = line
+    section_in_dict[cur_sect] = (section_in_dict[cur_sect] +
+      "\n{0}".format(new_line.rstrip()) if section_in_dict[cur_sect] else new_line)
 
   try:
     with open(recur_search(control_file_name), 'r') as control_file:
-      cur_package = cur_sect = ""
+      cur_package = cur_sect = packages = ""
       for line in control_file:
         if line.startswith("#"):
           continue
@@ -491,18 +493,30 @@ def load_control(control_file_name = "control"):
         if not cur_package:
           for package_sect in main_section_list:
             if "{0}:".format(package_sect) in line:
+              if cur_sect in build_dep_sects_list:
+                add_to_dep_sect(cur_sect, section_dict, packages + ",")
+              packages = ""
               cur_sect = package_sect
               break
           if cur_sect not in user_defined_in_main:
-            add_to_sect(cur_sect, build_dep_sects_list, section_dict, line)
+            if cur_sect in build_dep_sects_list:
+              packages += line.rstrip()
+            else:
+              add_to_sect(cur_sect, section_dict, line)
         else:
           for package_sect in package_section_list:
             if "{0}:".format(package_sect) in line:
+              if cur_sect in dep_sects_list:
+                add_to_dep_sect(cur_sect, section_dict["Package"][cur_package], packages + ",")
+              packages = ""
               cur_sect = package_sect
               break
           if cur_sect not in user_defined_in_packets[cur_package]:
-            add_to_sect(cur_sect, dep_sects_list,
-              section_dict["Package"][cur_package], line)
+            if cur_sect in dep_sects_list:
+              packages += line.rstrip()
+            else:
+              add_to_sect(cur_sect, section_dict["Package"][cur_package], line)
+
   except (IOError, TypeError):
     print "There is no control file!"
 

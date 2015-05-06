@@ -61,7 +61,7 @@ UpdateIfBounds:
 
 # Listed bound will be deleted in all packages
 # ["<<", ">>", "<=", ">=", "==", "!="]
-DelBounds: ["<<", "<=", "!="]
+DelBounds: 
 
 # If "True" then packages that didn't match
 # any package in main base will be checked
