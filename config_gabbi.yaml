@@ -84,5 +84,7 @@ PakageName:
 Version: 
 # Example of revision: "-1~u14.04+mos1"
 Revision: 
+  Main: 
+  Append: 
 Tag: 
 Urgency: 

@@ -70,3 +70,13 @@ Branch: kilo
 Buildsystem: 
 # python2, python3, sphinxdoc
 BuildWith: 
+
+# changelog section
+PakageName: 
+Version: 
+# Example of revision: "-1~u14.04+mos1"
+Revision: 
+  Main: "-1"
+  Append: "~u14.04+mos1"
+Tag: 
+Urgency: 

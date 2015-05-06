@@ -153,3 +153,13 @@ Branch: kilo
 Buildsystem: python_distutils
 # python2, python3, sphinxdoc
 BuildWith: python2
+
+# changelog section
+PakageName: 
+Version: 
+# Example of revision: "-1~u14.04+mos1"
+Revision: 
+  Main: 
+  Append: 
+Tag: 
+Urgency: 
