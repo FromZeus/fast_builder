@@ -24,9 +24,12 @@ impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
+#package_with_version = \
+#  re.compile("[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1}" \
+#    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1},")
 package_with_version = \
-  re.compile("[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1}" \
-    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1},")
+  re.compile("[a-zA-Z0-9-_.]+\s*(\([^,]*\)){,1}" \
+    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\([^,]*\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 cap_of_changelog = re.compile("[a-zA-Z0-9-_.]+\s*\((\d[.]*[a-z]*)+(\d[.]*[a-z+-~:]*)*\)" \
   "\s*[a-zA-Z0-9-_.]+\s*;\s*urgency=[a-z]+")
@@ -60,8 +63,8 @@ def main():
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
 
-    control_base_file = open("control-base.json", "r")
-    base_control_file = open("base-control.json", "r")
+    control_base_file = open("control-base.json", "r+")
+    base_control_file = open("base-control.json", "r+")
     control_internal_file = open("control-internal.json", "r")
     control_base = json.load(control_base_file)
     base_control = json.load(base_control_file)
@@ -192,7 +195,14 @@ def main():
           section_dict["Package"][pack_name]["Depends"] = \
             get_dependencies(section_dict["Package"][pack_name]["Depends"], global_req, base_control)
 
-      load_control()
+      load_control(control_base, base_control)
+
+      control_base_file.seek(0)
+      base_control_file.seek(0)
+      json.dump(control_base, control_base_file, indent=4, sort_keys=True, separators=(',', ':'))
+      json.dump(base_control, base_control_file, indent=4, sort_keys=True, separators=(',', ':'))
+      control_base_file.truncate()
+      base_control_file.truncate()
 
       for sect in build_dep_sects_list:
         section_dict[sect] = normalize(section_dict[sect],
@@ -456,7 +466,7 @@ def parse_packages(line):
       res[pack_name].add((pack_eq, pack_ver))
   return res
 
-def load_control(control_file_name = "control"):
+def load_control(control_base, base_control, control_file_name = "control"):
 
   def add_to_dep_sect(cur_sect, section_in_dict, line):
     packs_in_line = parse_packages(line)
@@ -489,6 +499,10 @@ def load_control(control_file_name = "control"):
         if "Package:" in line:
           cur_package = re.sub(":\s+", "",
             sectTemplate.search(line).group(0))
+          if not check_in_base(control_base, cur_package):
+            control_base[cur_package] = cur_package
+          if not check_in_base(base_control, cur_package):
+            base_control[cur_package] = cur_package
           continue
         if not cur_package:
           for package_sect in main_section_list:
