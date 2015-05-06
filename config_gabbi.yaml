@@ -1,4 +1,4 @@
-# general control section
+# General control section
 Source:
 Section: "python"
 Priority:
@@ -17,7 +17,7 @@ Vcs-Svn:
 Vcs-Browser:
 XS-Testsuite: 
 
-# packages section
+# Packages section
 # "Package" is necessary field
 Package:
   "python-gabbi":
@@ -73,18 +73,19 @@ Login: ""
 Password: ""
 Branch: kilo
 
-# rules section
+# Rules section
 # pybuild, python_distutils
 Buildsystem: python_distutils
 # python2, python3, sphinxdoc
 BuildWith: python2
 
-# changelog section
+# Changelog section
 PakageName: 
 Version: 
 # Example of revision: "-1~u14.04+mos1"
 Revision: 
   Main: 
+  # Just appends some to the end of revision
   Append: 
 Tag: 
 Urgency: 
