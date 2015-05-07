@@ -41,6 +41,8 @@ In the config.yaml file you can see fields with names same as in control file. P
     List of bounds which will be removed. You can use: ["<<", ">>", "<=", ">=", "==", "!="].
 - ControlInternal
     Some packages have multiple names. So, if this field is checked then packages which didn't match any package in main base will be checked in additional base.
+- BuildExcepts
+    List of pacakges which have to be excluded while building.
 
 *Credentials section*
 
