@@ -613,3 +613,7 @@ Revision:
   Append: 
 Tag: 
 Urgency: 
+
+BuildExcepts: {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
+  "python-argparse" : {}, "python-ordereddict" : {},
+  "python-multiprocessing": {}, "python-os": {}}

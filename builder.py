@@ -37,10 +37,6 @@ package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 cap_of_changelog = re.compile("[a-zA-Z0-9-_.]+\s*\((\d[.]*[a-z:]*)+(\d[.]*[a-z+-~:]*)*\)" \
   "\s*[a-zA-Z0-9-_.]+\s*;\s*urgency=[a-z]+")
 
-build_excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
-  "python-argparse" : {}, "python-ordereddict" : {},
-  "python-multiprocessing": {}, "python-os": {}}
-
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep", "Build-Conflicts"]
 dep_sects_list = ["Pre-Depends", "Depends", "Conflicts", "Provides", "Breaks",
 "Replaces", "Recommends", "Suggests"]
@@ -134,6 +130,7 @@ def main():
           packages_processing(new_section)
         return new_section
 
+      build_excepts = line["BuildExcepts"]
       build_excepts[section_dict["Source"]] = {}
 
       section_dict["OnlyIf-Build-Depends"] = section_dict["OnlyIf-Build-Depends-Indep"] = \
@@ -186,7 +183,7 @@ def main():
         normalized_global_req, control_base)
 
       for pack_name in section_dict["Package"].keys():
-        build_excepts[pack_name] = {}
+        #build_excepts[pack_name] = {}
         for dep_sect in dep_sects_list:
           section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = dict()
           if section_dict["Package"][pack_name][dep_sect]:
@@ -249,6 +246,7 @@ def main():
             section_dict["Package"][pack_name][dep_sect] = \
               normalize(section_dict["Package"][pack_name][dep_sect],
                 base_control, control_base, control_internal, control_internal_check, unknown_dep_file)
+            exclude_excepts(section_dict["Package"][pack_name][dep_sect], build_excepts)
 
             if section_dict["Update"]:
 
