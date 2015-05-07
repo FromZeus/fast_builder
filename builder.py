@@ -14,11 +14,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
 args = parser.parse_args()
 
-packageName = re.compile("(\d*[a-zA-Z0-9-_.]\d*)+")
+packageName = re.compile("([a-zA-Z0-9-_.]+|(\$\{[^\s]*\})+)")
 packageEq = re.compile("(>=|<=|>>|<<|!=|=)+")
-packageVers = re.compile("(\d[.]*[a-z+-~:]*)+")
+packageVers = re.compile("((\d[.a-z+-~:]*)+|(\$\{[^\s]*\})+)")
 pacakgeRevis = re.compile("[0-9.a-z+-~:]+\s*\)")
-packageVersChangelog = re.compile("(\d[.]*[a-z:]*)+")
+packageVersChangelog = re.compile("(\d[.a-z:]*)+")
 packageNameEnd = re.compile("[a-zA-Z0-9-_.]+$")
 impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
@@ -27,14 +27,16 @@ build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 #package_with_version = \
 #  re.compile("[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1}" \
 #    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1},")
+#package_with_version = \
+#  re.compile("[a-zA-Z0-9-_.]+\s*(\([^,]*\)){,1}" \
+#    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\([^,]*\)){,1},")
 package_with_version = \
-  re.compile("[a-zA-Z0-9-_.]+\s*(\([^,]*\)){,1}" \
+  re.compile("(([a-zA-Z0-9-_.]+)|(\$\{[^\s]*\})+)\s*(\([^,]*\)){,1}" \
     "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\([^,]*\)){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 cap_of_changelog = re.compile("[a-zA-Z0-9-_.]+\s*\((\d[.]*[a-z:]*)+(\d[.]*[a-z+-~:]*)*\)" \
   "\s*[a-zA-Z0-9-_.]+\s*;\s*urgency=[a-z]+")
 
-base_depends = {"${shlibs:Depends}": {}, "${misc:Depends}": {}}
 build_excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
   "python-argparse" : {}, "python-ordereddict" : {},
   "python-multiprocessing": {}, "python-os": {}}
@@ -68,8 +70,17 @@ def main():
     control_base_file = open("control-base.json", "r+")
     base_control_file = open("base-control.json", "r+")
     control_internal_file = open("control-internal.json", "r")
+
     unknown_req_file = open("unknown_req.json", "r+")
+    unknown_req_file.seek(0)
+    json.dump({}, unknown_req_file, indent=4, sort_keys=True, separators=(',', ':'))
+    unknown_req_file.truncate()
+
     unknown_dep_file = open("unknown_dep.json", "r+")
+    unknown_dep_file.seek(0)
+    json.dump({}, unknown_dep_file, indent=4, sort_keys=True, separators=(',', ':'))
+    unknown_dep_file.truncate()
+
     control_base = json.load(control_base_file)
     base_control = json.load(base_control_file)
     control_internal = json.load(control_internal_file)
@@ -195,8 +206,6 @@ def main():
                 base_control, control_base, control_internal, control_internal_check,
                   unknown_dep_file)
 
-        section_dict["Package"][pack_name]["Depends"] = \
-          add_base_depends(section_dict["Package"][pack_name]["Depends"])
         if section_dict["Package"][pack_name]["Main"]:
           section_dict["Package"][pack_name]["Depends"] = \
             get_dependencies(section_dict["Package"][pack_name]["Depends"], global_req, base_control)
@@ -318,8 +327,8 @@ def normalize(depends,
   new_depends = dict([(base_control[pack_name], {format_sign(el) for el in pack_val})
     if check_in_base(base_control, pack_name) else
       (pack_name, {format_sign(el) for el in pack_val})
-      if check_in_base(control_base, pack_name) or pack_name in base_depends.keys()
-      or check_in_base(control_internal, pack_name) and not control_internal_check else
+      if check_in_base(control_base, pack_name) or check_in_base(control_internal, pack_name)
+      and not control_internal_check else
         (control_internal[pack_name], {format_sign(el) for el in pack_val})
         if check_in_base(control_internal, pack_name) else (pack_name, "unknown")
           for pack_name, pack_val in depends.iteritems()])
@@ -340,7 +349,8 @@ def normalize(depends,
 # Change "reuirements" style to "control" style signs and update requirements
 def update_depends(depends, global_req, not_update):
   new_depends = dict([(pack_name, global_req[pack_name])
-    if global_req.has_key(pack_name) and  pack_name not in not_update else (pack_name, pack_val)
+    if global_req.has_key(pack_name) and pack_name not in not_update
+    and "$" not in pack_val else (pack_name, pack_val)
       for pack_name, pack_val in depends.iteritems()])
   return new_depends
 
@@ -359,12 +369,6 @@ def get_build_dependencies(build_depends, global_req, control_base, py_file_name
       print "There is no any of .py file with build dependencies!"
 
   return build_depends
-
-def add_base_depends(depends):
-  if not depends:
-    depends = dict()
-  depends = dict(depends.items() + base_depends.items())
-  return depends
 
 def get_dependencies(depends,
   global_req,
@@ -508,12 +512,8 @@ def load_control(control_base, base_control, control_file_name = "control"):
     if not section_in_dict[cur_sect]:
       section_in_dict[cur_sect] = dict()
     for pack_name, pack_val in packs_in_line.iteritems():
-      #if pack_name not in section_in_dict["OnlyIf-{0}".format(cur_sect)].keys():
       section_in_dict[cur_sect].setdefault(pack_name, pack_val)
       section_in_dict[cur_sect][pack_name] |= pack_val
-      #else:
-      #  section_in_dict[cur_sect][pack_name] = \
-      #    section_in_dict["OnlyIf-{0}".format(cur_sect)][pack_name]
 
   def add_to_sect(cur_sect, section_in_dict, line):
     sect_templ_line = sectTemplate.search(line)

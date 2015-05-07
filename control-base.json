@@ -1,4 +1,8 @@
 {
+    "${misc:Depends}":"${misc:Depends}",
+    "${python:Depends}":"${python:Depends}",
+    "${python:Versions}":"${python:Versions}",
+    "${shlibs:Depends}":"${shlibs:Depends}",
     "adduser":"adduser",
     "alembic":"alembic",
     "bridge-utils":"bridge-utils",
