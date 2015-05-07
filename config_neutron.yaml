@@ -1,0 +1,615 @@
+# general control section
+Source:
+Section: "net"
+Priority:
+Maintainer: "MOS Neutron Team <mos-neutron@mirantis.com>"
+XSBC-Original-Maintainer:
+Uploaders:
+Build-Depends:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Depends-Indep:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Conflicts:
+X-Python-Version:
+Standards-Version:
+Homepage:
+Vcs-Svn:
+Vcs-Browser:
+XS-Testsuite: 
+
+# packages section
+# "Package" is necessary field
+Package:
+  "neutron-server":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: True
+  "neutron-common":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "neutron-plugin-cisco":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "neutron-plugin-nec":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "neutron-plugin-nec-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "neutron-plugin-bigswitch":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "neutron-plugin-bigswitch-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-hyperv":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-brocade":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-plumgrid":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-metaplugin":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-vmware":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-nicira":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-l3-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-dhcp-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-metadata-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-lbaas-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "python-neutron":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-openvswitch":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-ml2":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-openvswitch-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-linuxbridge":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-linuxbridge-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-ryu":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-ryu-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-midonet":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-mlnx":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-mlnx-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-vpn-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-vpn-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-metering-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-metering-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-openflow-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-ibm":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-ibm-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-oneconvergence":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "neutron-plugin-oneconvergence-agent":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+
+# If "True" then nothing will be update
+# according global requirements
+Update: True
+
+# If "True" then only packages with
+# bounds already set will be updated
+UpdateIfBounds: 
+
+# Listed bound will be deleted in all packages
+# ["<<", ">>", "<=", ">=", "==", "!="]
+DelBounds: ["<<", "<=", "!="]
+
+# If "True" then packages that didn't match
+# any package in main base will be checked
+# in "control-internal" base
+ControlInternal: True
+
+# Credentials section
+Login: ""
+Password: ""
+Branch: kilo
+
+# rules section
+# pybuild, python_distutils
+Buildsystem: python_distutils
+# python2, python3, sphinxdoc
+BuildWith: python2
+
+# changelog section
+PakageName: 
+Version: 
+# Example of revision: "-1~u14.04+mos1"
+Revision: 
+  Main: 
+  Append: 
+Tag: 
+Urgency: 

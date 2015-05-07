@@ -15,7 +15,7 @@ parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
 args = parser.parse_args()
 
 packageName = re.compile("(\d*[a-zA-Z0-9-_.]\d*)+")
-packageEq = re.compile("(>=|<=|>>|<<|==|!=)+")
+packageEq = re.compile("(>=|<=|>>|<<|!=|=)+")
 packageVers = re.compile("(\d[.]*[a-z+-~:]*)+")
 pacakgeRevis = re.compile("[0-9.a-z+-~:]+\s*\)")
 packageVersChangelog = re.compile("(\d[.]*[a-z]*)+")
@@ -60,7 +60,7 @@ user_defined_in_packets = dict()
 packs_without_bounds = set()
 
 def main():
-  #pdb.set_trace()
+  pdb.set_trace()
   try:
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
@@ -68,6 +68,8 @@ def main():
     control_base_file = open("control-base.json", "r+")
     base_control_file = open("base-control.json", "r+")
     control_internal_file = open("control-internal.json", "r")
+    unknown_req_file = open("unknown_req.json", "r+")
+    unknown_dep_file = open("unknown_dep.json", "r+")
     control_base = json.load(control_base_file)
     base_control = json.load(base_control_file)
     control_internal = json.load(control_internal_file)
@@ -102,7 +104,7 @@ def main():
         lan.get_requirements_from_url(req_url, gerritAccount))
       print "Normalize global requirements..."
       normalized_global_req = normalize(global_req, base_control, control_base,
-        control_internal, control_internal_check)
+        control_internal, control_internal_check, unknown_req_file)
       print "Global requirements has been normalized successfully!"
 
       section_dict["Update"] = line["Update"]
@@ -186,10 +188,12 @@ def main():
 
             section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)] = \
               normalize(section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)],
-                base_control, control_base, control_internal, control_internal_check)
+                base_control, control_base, control_internal, control_internal_check,
+                  unknown_dep_file)
             section_dict["Package"][pack_name][dep_sect] = \
               normalize(section_dict["Package"][pack_name][dep_sect],
-                base_control, control_base, control_internal, control_internal_check)
+                base_control, control_base, control_internal, control_internal_check,
+                  unknown_dep_file)
 
         section_dict["Package"][pack_name]["Depends"] = \
           add_base_depends(section_dict["Package"][pack_name]["Depends"])
@@ -199,18 +203,11 @@ def main():
 
       load_control(control_base, base_control)
 
-      control_base_file.seek(0)
-      base_control_file.seek(0)
-      json.dump(control_base, control_base_file, indent=4, sort_keys=True, separators=(',', ':'))
-      json.dump(base_control, base_control_file, indent=4, sort_keys=True, separators=(',', ':'))
-      control_base_file.truncate()
-      base_control_file.truncate()
-
       for sect in build_dep_sects_list:
         section_dict[sect] = normalize(section_dict[sect],
-          base_control, control_base, control_internal, control_internal_check)
+          base_control, control_base, control_internal, control_internal_check, unknown_dep_file)
         section_dict["OnlyIf-{0}".format(sect)] = normalize(section_dict["OnlyIf-{0}".format(sect)],
-          base_control, control_base, control_internal, control_internal_check)
+          base_control, control_base, control_internal, control_internal_check, unknown_dep_file)
         if update_if_bounds:
           for pack_name, pack_val in section_dict[sect].iteritems():
             if not pack_val:
@@ -221,9 +218,11 @@ def main():
 
       if section_dict["Update"]:
         section_dict["Build-Depends"] = update_depends(section_dict["Build-Depends"],
-          normalized_global_req, section_dict["OnlyIf-Build-Depends"].keys() + list(packs_without_bounds))
+          normalized_global_req, section_dict["OnlyIf-Build-Depends"].keys() +
+            list(packs_without_bounds))
         section_dict["Build-Depends-Indep"] = update_depends(section_dict["Build-Depends-Indep"],
-          normalized_global_req, section_dict["OnlyIf-Build-Depends-Indep"].keys() + list(packs_without_bounds))
+          normalized_global_req, section_dict["OnlyIf-Build-Depends-Indep"].keys() +
+            list(packs_without_bounds))
 
 
       for sect in build_dep_sects_list:
@@ -240,7 +239,7 @@ def main():
             synchronize_with_onlyif(section_dict["Package"][pack_name], dep_sect)
             section_dict["Package"][pack_name][dep_sect] = \
               normalize(section_dict["Package"][pack_name][dep_sect],
-                base_control, control_base, control_internal, control_internal_check)
+                base_control, control_base, control_internal, control_internal_check, unknown_dep_file)
 
             if section_dict["Update"]:
 
@@ -262,6 +261,13 @@ def main():
           section_dict["Package"][pack_name]["Description"] = "<insert up to 60 chars description>\n" \
             " <insert long description, indented with spaces>"
 
+      control_base_file.seek(0)
+      base_control_file.seek(0)
+      json.dump(control_base, control_base_file, indent=4, sort_keys=True, separators=(',', ':'))
+      json.dump(base_control, base_control_file, indent=4, sort_keys=True, separators=(',', ':'))
+      control_base_file.truncate()
+      base_control_file.truncate()
+
       generate_control()
       generate_rules(build_system, build_with)
       generate_changelog(section_dict)
@@ -269,6 +275,8 @@ def main():
     control_base_file.close()
     base_control_file.close()
     control_internal_file.close()
+    unknown_req_file.close()
+    unknown_dep_file.close()
     conf.close()
 
   except KeyboardInterrupt:
@@ -284,7 +292,27 @@ def packages_processing(section_in_dict):
   for el in section_in_dict.keys():
     section_in_dict[el] = {(el1.items()[0]) for el1 in section_in_dict[el]}
 
-def normalize(depends, base_control, control_base, control_internal, control_internal_check):
+def normalize(depends,
+  base_control,
+  control_base,
+  control_internal,
+  control_internal_check,
+  unknown_file
+  ):
+
+  def write_unknown(unknown_packages, unknown_file):
+    if unknown_packages:
+      try:
+        unknown_file.seek(0)
+        packages = json.load(unknown_file)
+      except ValueError:
+        packages = dict()
+
+      unknown_file.seek(0)
+      json.dump(dict(unknown_packages.items() + packages.items()), unknown_file,
+        indent=4, sort_keys=True, separators=(',', ':'))
+      unknown_file.truncate()
+
   if not depends:
     depends = dict()
   new_depends = dict([(base_control[pack_name], {format_sign(el) for el in pack_val})
@@ -296,12 +324,16 @@ def normalize(depends, base_control, control_base, control_internal, control_int
         if check_in_base(control_internal, pack_name) else (pack_name, "unknown")
           for pack_name, pack_val in depends.iteritems()])
 
+  unknown_packages = dict()
   _new_depends = dict()
   for pack_name, pack_val in new_depends.iteritems():
     if pack_val == "unknown":
       print "Unknown package: {0}".format(pack_name)
+      unknown_packages[pack_name] = pack_name
     else:
       _new_depends[pack_name] = pack_val
+
+  write_unknown(unknown_packages, unknown_file)
 
   return _new_depends
 
