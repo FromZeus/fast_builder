@@ -31,8 +31,8 @@ build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 #  re.compile("[a-zA-Z0-9-_.]+\s*(\([^,]*\)){,1}" \
 #    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\([^,]*\)){,1},")
 package_with_version = \
-  re.compile("(([a-zA-Z0-9-_.]+)|(\$\{[^\s]*\})+)\s*(\([^,]*\)){,1}" \
-    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\([^,]*\)){,1},")
+  re.compile("(([a-zA-Z0-9-_.])|(\$\{[^\s]*\}))+\s*(\([^,]*\)){,1}" \
+    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*(\([^,]*\))*){,1},")
 package_ver_not_equal = re.compile("\(.*(<<).*\|.*(>>).*\)")
 cap_of_changelog = re.compile("[a-zA-Z0-9-_.]+\s*\((\d[.]*[a-z:]*)+(\d[.]*[a-z+-~:]*)*\)" \
   "\s*[a-zA-Z0-9-_.]+\s*;\s*urgency=[a-z]+")
@@ -58,7 +58,7 @@ user_defined_in_packets = dict()
 packs_without_bounds = set()
 
 def main():
-  #pdb.set_trace()
+  pdb.set_trace()
   try:
     conf = open(args.config, 'r')
     tempConf = yaml.load_all(conf)
@@ -328,7 +328,9 @@ def normalize(depends,
       if check_in_base(control_base, pack_name) or check_in_base(control_internal, pack_name)
       and not control_internal_check else
         (control_internal[pack_name], {format_sign(el) for el in pack_val})
-        if check_in_base(control_internal, pack_name) else (pack_name, "unknown")
+        if check_in_base(control_internal, pack_name) else
+        (pack_name, pack_val)
+        if "|" in pack_name else (pack_name, "unknown")
           for pack_name, pack_val in depends.iteritems()])
 
   unknown_packages = dict()
@@ -486,14 +488,21 @@ def parse_packages(line):
   entry_list = [it.start() for it in package_with_version.finditer(line)]
   for pack_idx in entry_list:
     pack = package_with_version.search(line[pack_idx:]).group(0)
-    pack_name = packageName.search(pack).group(0)
-    pack = pack[len(pack_name):]
-    pack_eq = packageEq.search(pack)
-    if pack_eq:
-      pack_eq = pack_eq.group(0)
-    pack_ver = packageVers.search(pack)
-    if pack_ver:
-      pack_ver = pack_ver.group(0)
+    pack_name = pack_eq = pack_ver = ""
+    if "|" in pack:
+      pack_name1 = packageName.search(pack).group(0)
+      pack_name2 = packageName.search(pack[pack.index("|"):]).group(0)
+      if pack_name1 != pack_name2:
+        pack_name = re.sub("\s*,", "", pack)
+    if not pack_name:
+      pack_name = packageName.search(pack).group(0)
+      pack = pack[len(pack_name):]
+      pack_eq = packageEq.search(pack)
+      if pack_eq:
+        pack_eq = pack_eq.group(0)
+      pack_ver = packageVers.search(pack)
+      if pack_ver:
+        pack_ver = pack_ver.group(0)
     # weak place: if (<< 0.5 | >> 0.7) will be != 0.5
     # instead of range != 0.5, != 0.6, != 0.7
     if package_ver_not_equal.search(pack):

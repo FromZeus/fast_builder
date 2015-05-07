@@ -1,0 +1,499 @@
+# general control section
+Source:
+Section: "net"
+Priority:
+Maintainer: "MOS Nova Team <mos-heat@mirantis.com>" 
+XSBC-Original-Maintainer:
+Uploaders:
+Build-Depends:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Depends-Indep:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Conflicts:
+X-Python-Version:
+Standards-Version:
+Homepage:
+Vcs-Svn:
+Vcs-Browser:
+XS-Testsuite: 
+
+# packages section
+# "Package" is necessary field
+Package:
+  "python-nova":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: True
+  "nova-common":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "nova-compute":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "nova-compute-libvirt":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "nova-compute-lxc":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "nova-compute-xen":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "nova-compute-qemu":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-compute-kvm":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-compute-vmware":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-conductor":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-cert":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-scheduler":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-volume":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-ajax-console-proxy":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-novncproxy":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-xvpvncproxy":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-spiceproxy":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-api":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-network":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-objectstore":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-console":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-consoleauth":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-doc":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-api-metadata":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-api-os-compute":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-api-os-volume":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-api-ec2":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-cells":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "nova-baremetal":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+
+# If "True" then nothing will be update
+# according global requirements
+Update: True
+
+# If "True" then only packages with
+# bounds already set will be updated
+UpdateIfBounds: 
+
+# Listed bound will be deleted in all packages
+# ["<<", ">>", "<=", ">=", "==", "!="]
+DelBounds: ["<<", "<=", "!="]
+
+# If "True" then packages that didn't match
+# any package in main base will be checked
+# in "control-internal" base
+ControlInternal: True
+
+# Credentials section
+Login: ""
+Password: ""
+Branch: kilo
+
+# rules section
+# pybuild, python_distutils
+Buildsystem: python_distutils
+# python2, python3, sphinxdoc
+BuildWith: python2
+
+# changelog section
+PakageName: 
+Version: 
+# Example of revision: "-1~u14.04+mos1"
+Revision: 
+  Main: 
+  Append: 
+Tag: 
+Urgency: 
+
+BuildExcepts: {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
+  "python-argparse" : {}, "python-ordereddict" : {},
+  "python-multiprocessing": {}, "python-os": {}}
