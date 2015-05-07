@@ -1,0 +1,199 @@
+# general control section
+Source:
+Section: "python"
+Priority:
+Maintainer: "MOS Ceilometer Team <mos-ceilometer@mirantis.com>"
+XSBC-Original-Maintainer:
+Uploaders:
+Build-Depends:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Depends-Indep:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Conflicts:
+X-Python-Version:
+Standards-Version:
+Homepage:
+Vcs-Svn:
+Vcs-Browser:
+XS-Testsuite: 
+
+# packages section
+# "Package" is necessary field
+Package:
+  "python-ceilometer":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: True
+  "ceilometer-common":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "ceilometer-collector":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "ceilometer-api":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "ceilometer-agent-compute":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "ceilometer-agent-central":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "ceilometer-agent-notification":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "ceilometer-alarm-evaluator":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "ceilometer-alarm-notifier":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+
+# If "True" then nothing will be update
+# according global requirements
+Update: True
+
+# If "True" then only packages with
+# bounds already set will be updated
+UpdateIfBounds: 
+
+# Listed bound will be deleted in all packages
+# ["<<", ">>", "<=", ">=", "==", "!="]
+DelBounds: ["<<", "<=", "!="]
+
+# If "True" then packages that didn't match
+# any package in main base will be checked
+# in "control-internal" base
+ControlInternal: True
+
+# Credentials section
+Login: ""
+Password: ""
+Branch: kilo
+
+# rules section
+# pybuild, python_distutils
+Buildsystem: python_distutils
+# python2, python3, sphinxdoc
+BuildWith: python2
+
+# changelog section
+PakageName: 
+Version: 
+# Example of revision: "-1~u14.04+mos1"
+Revision: 
+  Main: 
+  Append: 
+Tag: 
+Urgency: 
+
+BuildExcepts: {"python-distutils.core" : {}, "python-sys" : {}, "python-setup" : {},
+  "python-argparse" : {}, "python-ordereddict" : {},
+  "python-multiprocessing": {}, "python-os": {}}
