@@ -1,0 +1,180 @@
+# general control section
+Source:
+Section: "net"
+Priority:
+Maintainer: "MOS Nova Team <mos-heat@mirantis.com>"
+XSBC-Original-Maintainer:
+Uploaders:
+Build-Depends:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Depends-Indep:
+  OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
+Build-Conflicts:
+X-Python-Version:
+Standards-Version:
+Homepage:
+Vcs-Svn:
+Vcs-Browser:
+XS-Testsuite: 
+
+# packages section
+# "Package" is necessary field
+Package:
+  "python-swift":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: True
+  "swift":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "swift-proxy":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "swift-object-expirer":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "swift-object":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "swift-container":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "swift-account":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+  "swift-doc":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main:
+
+# If "True" then nothing will be update
+# according global requirements
+Update: True
+
+# If "True" then only packages with
+# bounds already set will be updated
+UpdateIfBounds: 
+
+# Listed bound will be deleted in all packages
+# ["<<", ">>", "<=", ">=", "==", "!="]
+DelBounds: ["<<", "<=", "!="]
+
+# If "True" then packages that didn't match
+# any package in main base will be checked
+# in "control-internal" base
+ControlInternal: True
+
+# Credentials section
+Login: ""
+Password: ""
+Branch: kilo
+
+# rules section
+# pybuild, python_distutils
+Buildsystem: python_distutils
+# python2, python3, sphinxdoc
+BuildWith: python2
+
+# changelog section
+PakageName: 
+Version: 
+# Example of revision: "-1~u14.04+mos1"
+Revision: 
+  Main: 
+  Append: 
+Tag: 
+Urgency: 

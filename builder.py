@@ -42,6 +42,8 @@ build_excepts = {"python-distutils.core" : {}, "python-sys" : {}, "python-setup"
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep", "Build-Conflicts"]
 dep_sects_list = ["Pre-Depends", "Depends", "Conflicts", "Provides", "Breaks",
 "Replaces", "Recommends", "Suggests"]
+not_update_dep_list = ["Conflicts", "Provides", "Breaks",
+"Replaces", "Recommends", "Suggests"]
 def_main_section_list = ["Source", "Section", "Priority", "Maintainer",
 "XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "Standards-Version",
 "Homepage", "Vcs-Svn", "Vcs-Browser"]
@@ -247,11 +249,12 @@ def main():
                   if not _pack_val:
                     packs_without_bounds.add(_pack_name)
 
-              section_dict["Package"][pack_name][dep_sect] = \
-                update_depends(section_dict["Package"][pack_name][dep_sect], normalized_global_req,
-                  section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)].keys() + \
-                    list(packs_without_bounds))
-            filter_bounds(section_dict["Package"][pack_name][dep_sect], del_bounds_list)
+              if dep_sect not in not_update_dep_list:
+                section_dict["Package"][pack_name][dep_sect] = \
+                  update_depends(section_dict["Package"][pack_name][dep_sect], normalized_global_req,
+                    section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)].keys() + \
+                      list(packs_without_bounds))
+                filter_bounds(section_dict["Package"][pack_name][dep_sect], del_bounds_list)
 
         if not section_dict["Package"][pack_name]["Architecture"]:
           section_dict["Package"][pack_name]["Architecture"] = "any"
