@@ -346,12 +346,32 @@ def normalize(depends,
 
   return _new_depends
 
-# Change "reuirements" style to "control" style signs and update requirements
+# def depends_to_orline(depends):
+#   orline = ""
+#   for pack_name, pack_val in depends.iteritems():
+#     orline += generate_out_pack(pack_name, pack_val)
+
+# def update_dependency(pack_name, pack_val, global_req, not_update):
+#   if "|" in pack_name:
+#     depends = parse_packages(re.sub("|", "," pack_name))
+#     depends = update_depends(depends, global_req, not_update)
+#     new_pack_name = 
+#     return (rnew_pack_namees, pack_val)
+#   else:
+#     return (pack_name, pack_val)
+
+def in_pack_ver(line, pack_val):
+  while pack_val:
+    (eq, ver) = pack_val.pop()
+    if line in ver:
+      return line
+  return None
+
 def update_depends(depends, global_req, not_update):
   new_depends = dict([(pack_name, global_req[pack_name])
     if global_req.has_key(pack_name) and pack_name not in not_update
-    and "$" not in pack_val else (pack_name, pack_val)
-      for pack_name, pack_val in depends.iteritems()])
+    and not in_pack_ver("$", pack_val) else (pack_name, pack_val)
+      for pack_name, pack_val in depends.iteritems()])  
   return new_depends
 
 def exclude_excepts(depends, excepts):
@@ -583,21 +603,25 @@ def filter_bounds(section_in_dict, del_bounds_list):
       for dep_el in section_in_dict[pack_name]
         if dep_el[0] not in del_bounds_list)
 
+def generate_out_pack(pack_name, pack_val):
+  if pack_name:
+    if pack_val:
+      for dep_el in pack_val:
+        if dep_el[0] == "!=":
+          out_pack = " {0} (<< {1}) | {0} (>> {1})," \
+            .format(pack_name, dep_el[1])
+        else:
+          out_pack = " {0} ({1} {2})," \
+            .format(pack_name, dep_el[0], dep_el[1])
+    else:
+      out_pack = " {0},".format(pack_name)
+  return out_pack
+
 def generate_control(control_file_name = "control"):
 
   def write_packs(sect):
-    for pack_el, pack_val in sect.iteritems():
-      if pack_el:
-        if pack_val:
-          for dep_el in pack_val:
-            if dep_el[0] == "!=":
-              control_file.write(" {0} (<< {1}) | {0} (>> {1})," \
-                .format(pack_el, dep_el[1]))
-            else:
-              control_file.write(" {0} ({1} {2})," \
-                .format(pack_el, dep_el[0], dep_el[1]))
-        else:
-          control_file.write(" {0},".format(pack_el))
+    for pack_name, pack_val in sect.iteritems():
+      control_file.write(generate_out_pack(pack_name, pack_val))
       control_file.write("\n")
 
   try:

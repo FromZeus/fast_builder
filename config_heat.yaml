@@ -24,8 +24,10 @@ Package:
     Architecture:
     Section:
     Pre-Depends:
-    Depends:
-      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Depends: 
+      {"oslo.concurrency": [], "oslo.context": [], "oslo.log": [], "oslo.middleware": [],
+      "oslo.serialization": [], "osprofiler": [], "oslo.versionedobjects": [],
+      OnlyIf: {"pbr": [{">=": "0.10"}]}}
     Conflicts:
     Provides:
     Breaks:
