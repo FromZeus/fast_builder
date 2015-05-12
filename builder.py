@@ -9,6 +9,7 @@ import require_utils
 import re
 import json
 import subprocess
+import operator
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
@@ -620,7 +621,7 @@ def generate_out_pack(pack_name, pack_val):
 def generate_control(control_file_name = "control"):
 
   def write_packs(sect):
-    for pack_name, pack_val in sect.iteritems():
+    for pack_name, pack_val in sorted(sect.items(), key = operator.itemgetter(0)):
       control_file.write(generate_out_pack(pack_name, pack_val))
       control_file.write("\n")
 

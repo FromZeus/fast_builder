@@ -147,7 +147,7 @@ Update: True
 
 # If "True" then only packages with
 # bounds already set will be updated
-UpdateIfBounds: 
+UpdateIfBounds: True
 
 # Listed bound will be deleted in all packages
 # ["<<", ">>", "<=", ">=", "==", "!="]
