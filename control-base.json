@@ -99,6 +99,7 @@
     "pysendfile":"pysendfile",
     "python":"python",
     "python-PyECLib":"PyECLib",
+    "python-alembic":"python-alembic",
     "python-all":"python-all",
     "python-all-dev":"python-all-dev",
     "python-amqplib":"python-amqplib",

@@ -50,7 +50,8 @@ def_main_section_list = ["Source", "Section", "Priority", "Maintainer",
 def_package_section_list = ["Architecture", "Section", "Description"]
 main_section_list = ["Source", "Section", "Priority", "Maintainer",
 "XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "Build-Depends",
-"Build-Depends-Indep", "Standards-Version", "Homepage", "Vcs-Svn", "Vcs-Browser", "XS-Testsuite"]
+"Build-Depends-Indep", "Standards-Version", "Homepage", "Vcs-Svn", "Vcs-Arch", "Vcs-Bzr",
+"Vcs-Cvs", "Vcs-Darcs", "Vcs-Git", "Vcs-Hg", "Vcs-Mtn", "Vcs-Browser", "XS-Testsuite"]
 package_section_list = ["Architecture", "Section", "Pre-Depends", "Depends", "Conflicts",
 "Provides", "Breaks", "Replaces", "Recommends", "Suggests", "Description"]
 changelog_sects = ["PakageName", "Version", "Revision", "Tag", "Urgency"]
@@ -164,6 +165,13 @@ def main():
       section_dict["Standards-Version"] = line["Standards-Version"]
       section_dict["Homepage"] = line["Homepage"]
       section_dict["Vcs-Svn"] = line["Vcs-Svn"]
+      section_dict["Vcs-Arch"] = line["Vcs-Arch"]
+      section_dict["Vcs-Bzr"] = line["Vcs-Bzr"]
+      section_dict["Vcs-Cvs"] = line["Vcs-Cvs"]
+      section_dict["Vcs-Darcs"] = line["Vcs-Darcs"]
+      section_dict["Vcs-Git"] = line["Vcs-Git"]
+      section_dict["Vcs-Hg"] = line["Vcs-Hg"]
+      section_dict["Vcs-Mtn"] = line["Vcs-Mtn"]
       section_dict["Vcs-Browser"] = line["Vcs-Browser"]
       section_dict["XS-Testsuite"] = line["XS-Testsuite"]
 
