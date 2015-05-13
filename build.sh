@@ -101,7 +101,7 @@ main()
 
   if [[ "$(check_in_array 2 ${in_stages[@]})" == "1" ]]; then
     echo "${bold}"
-    python builder.py -c "${config_file}" | tee builder.log
+    python fast_builder.py -c "${config_file}" | tee builder.log
     echo "${normal}"
   fi
 
