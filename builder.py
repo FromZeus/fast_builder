@@ -25,6 +25,7 @@ impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 sectTemplate = re.compile(":.+")
 build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
+packageEpoch = re.compile("\d:")
 #package_with_version = \
 #  re.compile("[a-zA-Z0-9-_.]+\s*(\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1}" \
 #    "(\s*\|{1}\s*[a-zA-Z0-9-_.]+\s*\((\s*(>>|<<|==|>=|<=)+\s*(\d[.]*[a-z+-~:]*)+\s*)\)){,1},")
@@ -57,6 +58,7 @@ section_dict = dict()
 user_defined_in_main = set()
 user_defined_in_packets = dict()
 packs_without_bounds = set()
+epoch_dict = dict()
 
 def main():
   #pdb.set_trace()
@@ -106,6 +108,16 @@ def main():
         global_branch = 'stable/kilo'
       gerritAccount = lan.login_to_launchpad(launchpad_id, launchpad_pw)
 
+      branch = ""
+      if global_branch == 'master':
+        branch = 'master'
+      elif global_branch == 'stable/juno':
+        branch = 'openstack-ci/fuel-6.1/2014.2'
+      elif global_branch == 'stable/icehouse':
+        branch = 'openstack-ci/fuel-6.0.1/2014.2'
+      elif global_branch == 'stable/kilo':
+        branch = 'openstack-ci/fuel-7.0/2015.1.0'
+
       req_url = 'https://raw.githubusercontent.com/openstack/requirements/' \
       '{0}/global-requirements.txt'.format(global_branch)
       global_req = require_utils.Require.parse_req(
@@ -116,6 +128,7 @@ def main():
       print "Global requirements has been normalized successfully!"
 
       section_dict["Update"] = line["Update"]
+      section_dict["SetEpoch"] = line["SetEpoch"]
 
       section_dict["Source"] = line["Source"]
       section_dict["Section"] = line["Section"]
@@ -231,6 +244,11 @@ def main():
           normalized_global_req, section_dict["OnlyIf-Build-Depends-Indep"].keys() +
             list(packs_without_bounds))
 
+      if section_dict["SetEpoch"]:
+        section_dict["Build-Depends"] = \
+          check_epoch(section_dict["Build-Depends"], epoch_dict, gerritAccount, branch)
+        section_dict["Build-Depends-Indep"] = \
+          check_epoch(section_dict["Build-Depends-Indep"], epoch_dict, gerritAccount, branch)
 
       for sect in build_dep_sects_list:
         synchronize_with_onlyif(section_dict, sect)
@@ -262,6 +280,12 @@ def main():
                     section_dict["Package"][pack_name]["OnlyIf-{0}".format(dep_sect)].keys() + \
                       list(packs_without_bounds))
                 filter_bounds(section_dict["Package"][pack_name][dep_sect], del_bounds_list)
+                if section_dict["SetEpoch"]:
+                  print "Epoch checking in progress..."
+                  section_dict["Package"][pack_name][dep_sect] = \
+                    check_epoch(section_dict["Package"][pack_name][dep_sect],
+                      epoch_dict, gerritAccount, branch)
+                  print "Epoch checking is done!"
 
         if not section_dict["Package"][pack_name]["Architecture"]:
           section_dict["Package"][pack_name]["Architecture"] = "any"
@@ -290,6 +314,61 @@ def main():
   except KeyboardInterrupt:
     print '\nThe process was interrupted by the user'
     raise SystemExit
+
+def add_epoch(gerrit_account, epoch_dict, pack_name, pack_val, branch):
+  if epoch_dict.has_key(pack_name):
+    epoch = epoch_dict[pack_name]
+  else:
+    epoch = get_epoch(gerrit_account, pack_name, branch)
+    if not epoch and pack_name.startswith("python-"):
+      epoch = get_epoch(gerrit_account, re.sub("python-", "", pack_name), branch)
+    epoch_dict[pack_name] = epoch
+
+  new_pack_val = pack_val
+  if epoch:
+    new_pack_val = [(pack_eq, epoch + pack_ver)
+    for pack_eq, pack_ver in pack_val]
+
+  return new_pack_val
+
+def check_epoch(section_in_dict, epoch_dict, gerrit_account, branch):
+  new_section = dict([(pack_name, add_epoch(gerrit_account, epoch_dict, pack_name, pack_val, branch))
+    for pack_name, pack_val in section_in_dict.iteritems()])
+  return new_section
+
+def get_epoch(gerrit_account, pack_name, branch):
+  req_changelog = request_file(gerrit_account, pack_name, branch, "changelog")
+
+  epoch_line = ""
+  if req_changelog is not None:
+    epoch_line = require_utils.Require.get_epoch(req_changelog)
+
+  if epoch_line:
+    epoch = packageEpoch.search(epoch_line).group(0)
+    return epoch
+  else:
+    return None
+
+def request_file(gerrit_account, repo, branch, type):
+    # URL for getting changelog file
+    req_url_changelog = ['https://review.fuel-infra.org/gitweb?p=openstack-build/{0}-build.git;' \
+                        'a=blob_plain;f=debian/{2};hb=refs/heads/{1}',
+                        'https://review.fuel-infra.org/gitweb?p=openstack-build/{0}-build.git;' \
+                        'a=blob_plain;f=trusty/debian/{2};hb=refs/heads/{1}']
+
+    idx = 0 
+    while idx < len(req_url_changelog):
+        try:
+            req_control = \
+                lan.get_requirements_from_url(req_url_changelog[idx].format(repo.strip(), branch, type),
+                    gerrit_account)
+        except KeyError:
+            req_control = None
+        idx += 1
+        if req_control is not None:
+            break
+
+    return req_control
 
 def synchronize_with_onlyif(section_in_dict, name):
   for pack_name, pack_val in section_in_dict["OnlyIf-{0}".format(name)].iteritems():
@@ -372,7 +451,7 @@ def update_depends(depends, global_req, not_update):
   new_depends = dict([(pack_name, global_req[pack_name])
     if global_req.has_key(pack_name) and pack_name not in not_update
     and not in_pack_ver("$", pack_val) else (pack_name, pack_val)
-      for pack_name, pack_val in depends.iteritems()])  
+      for pack_name, pack_val in depends.iteritems()])
   return new_depends
 
 def exclude_excepts(depends, excepts):

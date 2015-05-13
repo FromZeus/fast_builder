@@ -132,6 +132,10 @@ Package:
 # according global requirements
 Update: True
 
+# If "True" then epoch will be set to
+# all packages which have it
+SetEpoch: True
+
 # If "True" then only packages with
 # bounds already set will be updated
 UpdateIfBounds: 
