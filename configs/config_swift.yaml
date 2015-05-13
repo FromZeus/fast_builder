@@ -14,6 +14,13 @@ X-Python-Version:
 Standards-Version:
 Homepage:
 Vcs-Svn:
+Vcs-Git:
+Vcs-Arch:
+Vcs-Bzr:
+Vcs-Cvs:
+Vcs-Darcs:
+Vcs-Hg:
+Vcs-Mtn:
 Vcs-Browser:
 XS-Testsuite: 
 
@@ -144,6 +151,10 @@ Package:
 # If "True" then nothing will be update
 # according global requirements
 Update: True
+
+# If "True" then epoch will be set to
+# all packages which have it
+SetEpoch: 
 
 # If "True" then only packages with
 # bounds already set will be updated

@@ -35,6 +35,8 @@ In the config.yaml file you can see fields with names same as in control file. P
     Make utility check "control-internal.json" base for matching with packets that didn't match any package in main base.
 - Update
     Update or not update versions of all dependencies.
+- SetEpoch
+    If you want to set epoch to packages which have it, check this option. Note: Setting takes some time
 - UpdateIfBounds
     Update only packages which already have bounds.
 - DelBounds
