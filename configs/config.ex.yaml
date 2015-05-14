@@ -11,6 +11,7 @@ Build-Depends-Indep:
   OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
 Build-Conflicts:
 X-Python-Version:
+XS-Python-Version: 
 Standards-Version:
 Homepage:
 Vcs-Svn:

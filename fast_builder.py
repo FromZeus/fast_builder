@@ -21,13 +21,15 @@ dep_sects_list = ["Pre-Depends", "Depends", "Conflicts", "Provides", "Breaks",
 not_update_dep_list = ["Conflicts", "Provides", "Breaks",
 "Replaces", "Recommends", "Suggests"]
 def_main_section_list = ["Source", "Section", "Priority", "Maintainer",
-"XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "Standards-Version",
-"Homepage", "Vcs-Svn", "Vcs-Browser"]
+"XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "XS-Python-Version",
+"Standards-Version", "Homepage", "Vcs-Svn", "Vcs-Arch", "Vcs-Bzr", "Vcs-Cvs",
+"Vcs-Darcs", "Vcs-Git", "Vcs-Hg", "Vcs-Mtn", "Vcs-Browser"]
 def_package_section_list = ["Architecture", "Section", "Description"]
 main_section_list = ["Source", "Section", "Priority", "Maintainer",
-"XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "Build-Depends",
-"Build-Depends-Indep", "Standards-Version", "Homepage", "Vcs-Svn", "Vcs-Arch", "Vcs-Bzr",
-"Vcs-Cvs", "Vcs-Darcs", "Vcs-Git", "Vcs-Hg", "Vcs-Mtn", "Vcs-Browser", "XS-Testsuite"]
+"XSBC-Original-Maintainer", "Uploaders", "X-Python-Version", "XS-Python-Version",
+"Build-Depends", "Build-Depends-Indep", "Standards-Version", "Homepage", "Vcs-Svn",
+"Vcs-Arch", "Vcs-Bzr", "Vcs-Cvs", "Vcs-Darcs", "Vcs-Git", "Vcs-Hg", "Vcs-Mtn",
+"Vcs-Browser", "XS-Testsuite"]
 package_section_list = ["Architecture", "Section", "Pre-Depends", "Depends", "Conflicts",
 "Provides", "Breaks", "Replaces", "Recommends", "Suggests", "Description"]
 changelog_sects = ["PakageName", "Version", "Revision", "Tag", "Urgency"]
@@ -132,6 +134,7 @@ def main():
       #-------------------------------------------------------------#
 
       section_dict["X-Python-Version"] = line["X-Python-Version"]
+      section_dict["XS-Python-Version"] = line["XS-Python-Version"]
       section_dict["Standards-Version"] = line["Standards-Version"]
       section_dict["Homepage"] = line["Homepage"]
       section_dict["Vcs-Svn"] = line["Vcs-Svn"]
