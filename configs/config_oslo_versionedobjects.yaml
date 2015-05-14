@@ -28,7 +28,7 @@ XS-Testsuite:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-oslo-versionedobjects":
+  "python-oslo.versionedobjects":
     Architecture:
     Section:
     Pre-Depends:
@@ -40,14 +40,18 @@ Package:
     Replaces:
     Recommends:
     Suggests:
-    Description:
+    Description: >
+      oslo.versionedobjects library deals with DB schema being at different versions than the code expects, allowing services to be 
+      operated safely during upgrades. It enables DB independent schema by providing an abstraction layer, which allows us to support SQL and NoSQL 
+      Databases. oslo.versionedobjects is also used in RPC APIs, to ensure upgrades happen without spreading version dependent code across different 
+      services and projects.
     Files: "usr/lib"
     Main: True
-  "python-oslo-versionedobjects-doc":
+  "python-oslo.versionedobjects-doc":
     Architecture:
     Section:
     Pre-Depends:
-    Depends: {"python-oslo-versionedobjects": [{"=": "${binary:Version}"}],
+    Depends: {"python-oslo.versionedobjects": [{"=": "${binary:Version}"}],
       OnlyIf: {"pbr": [{">=": "0.10"}]}
     }
     Conflicts:
@@ -56,7 +60,11 @@ Package:
     Replaces:
     Recommends:
     Suggests:
-    Description:
+    Description: >
+      oslo.versionedobjects library deals with DB schema being at different versions than the code expects, allowing services to be 
+      operated safely during upgrades. It enables DB independent schema by providing an abstraction layer, which allows us to support SQL and NoSQL 
+      Databases. oslo.versionedobjects is also used in RPC APIs, to ensure upgrades happen without spreading version dependent code across different 
+      services and projects. This is the docs of python-oslo-versionedobjects.
     Files: "doc/source/* /usr/share/doc/"
     Main: 
 
