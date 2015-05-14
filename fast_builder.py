@@ -6,6 +6,7 @@ import lan
 import require_utils
 import re
 import json
+from os.path import join, isdir
 import fast_builder_loader
 import fast_builder_tools
 import fast_builder_generator
@@ -13,8 +14,6 @@ import fast_builder_generator
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--config', dest='config', help='Configuration YAML')
 args = parser.parse_args()
-
-#build_depends = re.compile('"[a-zA-Z0-9-_.|<|>|=|!]+"')
 
 build_dep_sects_list = ["Build-Depends", "Build-Depends-Indep", "Build-Conflicts"]
 dep_sects_list = ["Pre-Depends", "Depends", "Conflicts", "Provides", "Breaks",

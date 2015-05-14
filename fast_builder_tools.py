@@ -16,6 +16,7 @@ packageEpoch = re.compile("\d:")
 impTemplate = re.compile("import [a-zA-Z0-9-_.]+")
 fromTemplate = re.compile("from [a-zA-Z0-9-_.]+")
 packageNameEnd = re.compile("[a-zA-Z0-9-_.]+$")
+build_depends = re.compile("((\"[a-zA-Z0-9-_.]+\")|(\'[a-zA-Z0-9-_.]+\'))")
 
 def none_check(obj):
   return obj if obj else ""
@@ -41,8 +42,7 @@ def part_of_package(package, packages):
   return None
 
 def in_pack_ver(line, pack_val):
-  while pack_val:
-    (eq, ver) = pack_val.pop()
+  for eq, ver in pack_val:
     if line in ver:
       return line
   return None
@@ -59,7 +59,7 @@ def recur_search(names, relative_path = "."):
 
 def update_depends(depends, global_req, not_update):
   new_depends = dict([(pack_name, global_req[pack_name])
-    if global_req.has_key(pack_name) and pack_name not in not_update
+    if global_req.has_key(pack_name) and pack_name not in not_update \
     and not in_pack_ver("$", pack_val) else (pack_name, pack_val)
       for pack_name, pack_val in depends.iteritems()])
   return new_depends
@@ -271,8 +271,10 @@ def filter_packs(line, control_base):
   imp = impTemplate.search(line)
   frm = fromTemplate.search(line)
 
-  if req_pack:
-    req_pack_name = req_pack.group(0)[1:-1:]
+  entry_list = [(it.start(), it.end()) for it in build_depends.finditer(line)]
+
+  for (entry_start, entry_end) in entry_list:
+    req_pack_name = line[entry_start + 1:entry_end - 1:]
     try:
       res_pack_name = "python-" + re.sub("[_]", "-",
         packageName.search(req_pack_name).group(0))
@@ -290,7 +292,8 @@ def filter_packs(line, control_base):
       return None
     else:
       return res_pack_name_part
-  elif imp or frm:
+
+  if imp or frm:
     res_pack_name_frm = res_pack_name_imp = \
     res_pack_name_frm_part = res_pack_name_imp_part = ""
     try:
