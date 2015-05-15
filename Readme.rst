@@ -14,9 +14,10 @@ How to use
 
 * `Configure config.yaml`_
 
-* Run "./build.sh -e example@example.com -s 1 2 3"
+* Run "./build.sh -e example@example.com -s 1 2 3 -c cinfigs/config.yaml"
     * -e - Here you have to place your e-mail address
     * -s - `Stages of building`_
+    * -c - Path to config file
 
 * If all was configured well and nothing bad happens you could get your successully builded package!
 
