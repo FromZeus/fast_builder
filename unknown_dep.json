@@ -1,1 +1,7 @@
-{}
+{
+    "cryptsetup":"cryptsetup",
+    "lvm2":"lvm2",
+    "python-ceph":"python-ceph",
+    "python-hp3parclient":"python-hp3parclient",
+    "tgt":"tgt"
+}

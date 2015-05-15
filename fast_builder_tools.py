@@ -27,6 +27,7 @@ def check_in_base(base, el):
   else:
     return None
 
+# Format sign of package versions
 def format_sign(el):
   if el[0] == "<":
     return ("<<", el[1])
@@ -35,18 +36,23 @@ def format_sign(el):
   else:
     return el
 
+# Check if package is a super-package for any of packages
 def part_of_package(package, packages):
   for el in packages:
     if el in package:
       return el
   return None
 
+# Check if line is in package version
 def in_pack_ver(line, pack_val):
   for eq, ver in pack_val:
     if line in ver:
       return line
   return None
 
+# Recursive search for names, names is a list of files which have
+# to be founded. If any of names found, function returns relative
+# path to this file
 def recur_search(names, relative_path = "."):
   for el in listdir(relative_path):
     if el in names:
@@ -57,6 +63,7 @@ def recur_search(names, relative_path = "."):
         return path
   return None
 
+# This function update depends with global requirements
 def update_depends(depends, global_req, not_update):
   new_depends = dict([(pack_name, global_req[pack_name])
     if global_req.has_key(pack_name) and pack_name not in not_update \
@@ -64,22 +71,28 @@ def update_depends(depends, global_req, not_update):
       for pack_name, pack_val in depends.iteritems()])
   return new_depends
 
+# This function exclude from depends list of packages - excepts
 def exclude_excepts(depends, excepts):
   for el in excepts:
     if depends.has_key(el):
       del depends[el]
 
+# Filter bounds of packages in section with list of bounds
+# which have to be deleted
 def filter_bounds(section_in_dict, del_bounds_list):
   for pack_name in section_in_dict.keys():
     section_in_dict[pack_name] = set(dep_el
       for dep_el in section_in_dict[pack_name]
         if dep_el[0] not in del_bounds_list)
 
+# Set package bounds for every package found in OnlyIf section
+# equals OnlyIf bounds in depends section
 def synchronize_with_onlyif(section_in_dict, name):
   for pack_name, pack_val in section_in_dict["OnlyIf-{0}".format(name)].iteritems():
     if section_in_dict[name].has_key(pack_name):
       section_in_dict[name][pack_name] = pack_val
 
+# Separate OnlyIf section from main section
 def separate_onlyif_section(section):
   new_section = dict((pack_name, pack_val) for pack_name, pack_val in
     section.iteritems() if pack_name != "OnlyIf")
@@ -87,10 +100,12 @@ def separate_onlyif_section(section):
     packages_processing(new_section)
   return new_section
 
+# 
 def packages_processing(section_in_dict):
   for el in section_in_dict.keys():
     section_in_dict[el] = {(el1.items()[0]) for el1 in section_in_dict[el]}
 
+# Check package for epoch and add epoch to package version
 def add_epoch(gerrit_account, epoch_dict, pack_name, pack_val, branch):
   if epoch_dict.has_key(pack_name):
     epoch = epoch_dict[pack_name]
@@ -107,11 +122,13 @@ def add_epoch(gerrit_account, epoch_dict, pack_name, pack_val, branch):
 
   return new_pack_val
 
+# Check every package in section for epoch and add it
 def check_epoch(section_in_dict, epoch_dict, gerrit_account, branch):
   new_section = dict([(pack_name, add_epoch(gerrit_account, epoch_dict, pack_name, pack_val, branch))
     for pack_name, pack_val in section_in_dict.iteritems()])
   return new_section
 
+# Get epoch for package if it exists
 def get_epoch(gerrit_account, pack_name, branch):
   req_changelog = request_file(gerrit_account, pack_name, branch, "changelog")
 
@@ -125,6 +142,7 @@ def get_epoch(gerrit_account, pack_name, branch):
   else:
     return None
 
+# Get build depends from py_file_names
 def get_build_dependencies(build_depends, global_req, control_base, py_file_names = ["setup.py"]):
   for py_file in py_file_names:
     path_to_py = recur_search(names = py_file)
@@ -136,6 +154,7 @@ def get_build_dependencies(build_depends, global_req, control_base, py_file_name
 
   return build_depends
 
+# Get depends from req_file_names
 def get_dependencies(depends,
   global_req,
   base_control,
@@ -157,6 +176,7 @@ def get_dependencies(depends,
     print "There is no requirements!"
   return depends
 
+# Get file from repo/branch. Allow types: "control", "changelog"
 def request_file(gerrit_account, repo, branch, type):
     # URL for getting changelog file
     req_url_changelog = ['https://review.fuel-infra.org/gitweb?p=openstack-build/{0}-build.git;' \
@@ -178,6 +198,7 @@ def request_file(gerrit_account, repo, branch, type):
 
     return req_control
 
+# Load packages from file and filter them
 def load_packs(path, control_base):
   try:
     with open(path, 'r') as grep_file:
@@ -190,6 +211,7 @@ def load_packs(path, control_base):
   except (IOError, TypeError):
     return None
 
+# Get all packages with them versions from line
 def parse_packages(line):
   res = dict()
   entry_list = [it.start() for it in package_with_version.finditer(line)]
@@ -219,6 +241,10 @@ def parse_packages(line):
       res[pack_name].add((pack_eq, pack_ver))
   return res
 
+# Make packages match to normal form (control form).
+# If package can't be found in any base and does not
+# contain "|" symbol, then package will be marked
+# as "unknown" and wrote to .json file
 def normalize(depends,
   base_control,
   control_base,
@@ -266,6 +292,7 @@ def normalize(depends,
 
   return _new_depends
 
+# This function is for parsing .py files for dependencies
 def filter_packs(line, control_base):
   req_pack = build_depends.search(line)
   imp = impTemplate.search(line)

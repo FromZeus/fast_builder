@@ -67,5 +67,22 @@ Unknown package: enum34
 Unknown package: XStatic-Bootstrap-Datepicker
 Unknown package: XStatic-JQuery-Migrate
 Global requirements has been normalized successfully!
-Unknown package in .py file: python-License
-Unknown package in .py file: python-multiprocessing
+There is no any of .py file with build dependencies!
+There is no requirements!
+Epoch checking in progress...
+Epoch checking is done!
+Unknown package: python-hp3parclient
+Unknown package: python-ceph
+Epoch checking in progress...
+Epoch checking is done!
+Epoch checking in progress...
+Epoch checking is done!
+Unknown package: cryptsetup
+Unknown package: tgt
+Unknown package: lvm2
+Epoch checking in progress...
+Epoch checking is done!
+Epoch checking in progress...
+Epoch checking is done!
+Epoch checking in progress...
+Epoch checking is done!

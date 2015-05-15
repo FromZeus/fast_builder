@@ -1,8 +1,8 @@
 # general control section
 Source:
-Section: "python"
+Section: 
 Priority:
-Maintainer: "MOS Oslo Team <mos-oslo@mirantis.com>"
+Maintainer: "MOS Cinder Team <mos-cinder@mirantis.com>"
 XSBC-Original-Maintainer:
 Uploaders:
 Build-Depends:
@@ -10,10 +10,10 @@ Build-Depends:
 Build-Depends-Indep:
   OnlyIf: {"pbr": [{">=": "0.10"}], "python-all": [{">=": "2.7.1"}], "debhelper": [{">=": "9"}]}
 Build-Conflicts:
-X-Python-Version: 
-XS-Python-Version: ">= 2.6"
+X-Python-Version:
+XS-Python-Version: 
 Standards-Version:
-Homepage: "http://launchpad.net/oslo"
+Homepage:
 Vcs-Svn:
 Vcs-Git:
 Vcs-Arch:
@@ -28,7 +28,7 @@ XS-Testsuite:
 # packages section
 # "Package" is necessary field
 Package:
-  "python-oslo.versionedobjects":
+  "python-cinder":
     Architecture:
     Section:
     Pre-Depends:
@@ -40,32 +40,83 @@ Package:
     Replaces:
     Recommends:
     Suggests:
-    Description: >
-      oslo.versionedobjects library deals with DB schema being at different versions than the code expects, allowing services to be 
-      operated safely during upgrades. It enables DB independent schema by providing an abstraction layer, which allows us to support SQL and NoSQL 
-      Databases. oslo.versionedobjects is also used in RPC APIs, to ensure upgrades happen without spreading version dependent code across different 
-      services and projects.
-    Files: "usr/lib"
+    Description:
+    Files: ""
     Main: True
-  "python-oslo.versionedobjects-doc":
+  "cinder-common":
     Architecture:
     Section:
     Pre-Depends:
-    Depends: {"python-oslo.versionedobjects": [{"=": "${binary:Version}"}],
+    Depends:
       OnlyIf: {"pbr": [{">=": "0.10"}]}
-    }
     Conflicts:
     Provides:
     Breaks:
     Replaces:
     Recommends:
     Suggests:
-    Description: >
-      oslo.versionedobjects library deals with DB schema being at different versions than the code expects, allowing services to be 
-      operated safely during upgrades. It enables DB independent schema by providing an abstraction layer, which allows us to support SQL and NoSQL 
-      Databases. oslo.versionedobjects is also used in RPC APIs, to ensure upgrades happen without spreading version dependent code across different 
-      services and projects. This is the docs of python-oslo-versionedobjects.
-    Files: "doc/source/* /usr/share/doc/"
+    Description:
+    Files: ""
+    Main: 
+  "cinder-api":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "cinder-volume":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "cinder-scheduler":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
+    Main: 
+  "cinder-backup":
+    Architecture:
+    Section:
+    Pre-Depends:
+    Depends:
+      OnlyIf: {"pbr": [{">=": "0.10"}]}
+    Conflicts:
+    Provides:
+    Breaks:
+    Replaces:
+    Recommends:
+    Suggests:
+    Description:
+    Files: ""
     Main: 
 
 # If "True" then nothing will be update
@@ -74,11 +125,11 @@ Update: True
 
 # If "True" then epoch will be set to
 # all packages which have it
-SetEpoch: 
+SetEpoch: True
 
 # If "True" then only packages with
 # bounds already set will be updated
-UpdateIfBounds: 
+UpdateIfBounds: True
 
 # Listed bound will be deleted in all packages
 # ["<<", ">>", "<=", ">=", "==", "!="]
@@ -90,8 +141,8 @@ DelBounds: ["<<", "<=", "!="]
 ControlInternal: 
 
 # Credentials section
-Login: "dtrishkin@mirantis.com"
-Password: "3393YEShq27ops"
+Login: ""
+Password: ""
 Branch: kilo
 
 # rules section
