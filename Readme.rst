@@ -14,7 +14,7 @@ How to use
 
 * `Configure config.yaml`_
 
-* Run "./build.sh -e example@example.com -s 1 2 3 -c cinfigs/config.yaml"
+* Run "./build.sh -e example@example.com -s 1 2 3 -c configs/config.yaml"
     * -e - Here you have to place your e-mail address
     * -s - `Stages of building`_
     * -c - Path to config file
